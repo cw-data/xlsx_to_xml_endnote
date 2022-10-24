@@ -8,7 +8,7 @@ library(tidyverse)
 library(XML)
 
 ######################################
-### 1) read the Forms .xlsx output into R
+### read the Forms .xlsx output into R
 ### simplify the dataset so we can ignore empty columns for now
 data <-
   readxl::read_excel("data/R8 OG Reference Entry(1-3).xlsx") %>%
@@ -33,15 +33,24 @@ data <-
   dplyr::filter(is.na(title) == FALSE) # just grab one row that's not missing any values
 
 ######################################
-### 2) come up with a working XML tree
-### 3) use that XML tree to map variables from the dataframe to XML
-### should match ~data/enl_xml_schema.txt
-# https://stackoverflow.com/questions/35234863/how-convert-a-data-frame-into-a-xml-file-with-r
+### make and print a basic xml tree
 
 xml <- xmlTree()
 # names(xml) # list out the functions available in xmlTree()
-xml$addTag("xml", close=FALSE) # adds an opening <xml> tag and leaves it open until we close it
-xml$addTag("records", close=FALSE) # adds an opening <records> tag and leaves it open until we close it 
+xml$addNode("xml", close=FALSE) # adds an opening <xml> tag and leaves it open until we close it
+xml$addNode("records", close=FALSE) # adds an opening <records> tag and leaves it open until we close it 
+xml$addNode(name = "database", # how to add nodes with attributes (or namespaces) # from ?xmlTree
+             attrs = c(
+               name = "My Test library.enl",
+               path = "C:\\Users\\mwroberts\\Documents\\My Test library.enl"
+             ),
+             "My Test library.enl")
+# <source-app name="EndNote" version="20.4">EndNote</source-app>
+xml$addNode(name = "source-app",
+             attrs = c(name = "EndNote",
+                       version = "20.4"),
+             
+             "EndNote")
 for (i in 1:nrow(data)) {
   xml$addTag("record", close=FALSE) # each row from data goes into its own <record> tag, leave the tag open until we close it
   for (j in colnames(data)) {
@@ -53,5 +62,16 @@ xml$closeTag() # close the records tag: </records>
 xml$closeTag() # close the xml tag: </xml>
 cat(saveXML(xml, prefix='<?xml version="1.0" encoding="UTF-8"?>')) # print to console the xml we just looped to create
 
-### 4) write out the XML file to disk
-saveXML(xml, "data/xml_output.xml", prefix='<?xml version="1.0" encoding="UTF-8"?>\n') # https://stackoverflow.com/questions/46006867/xml-encoding-using-r
+# known problems with this basic xml tree:
+### 1. Despite <xml> being the root tag in endnote's xml export, the schema rejects a root <xml> tag.
+### need to test a real endnote import to see if wants the root <xml> tag or not
+### 2. 
+
+
+
+node <- xmlNode("foo", attrs=c(a="1", b="my name"))
+
+xmlGetAttr(node, "a")
+xmlGetAttr(node, "doesn't exist", "My own default value")
+
+xmlGetAttr(node, "b", "Just in case")
