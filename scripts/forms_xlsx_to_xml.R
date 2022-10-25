@@ -6,7 +6,6 @@ library(readxl)
 library(dplyr)
 library(tidyverse)
 library(XML)
-library(xml2)
 
 ######################################
 ### read the Forms .xlsx output into R
