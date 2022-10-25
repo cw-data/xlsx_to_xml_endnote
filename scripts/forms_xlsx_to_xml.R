@@ -6,6 +6,7 @@ library(readxl)
 library(dplyr)
 library(tidyverse)
 library(XML)
+library(xml2)
 
 ######################################
 ### read the Forms .xlsx output into R
@@ -47,7 +48,7 @@ data <- rbind(data, data2) # add the fake record to data
 ### build the realistic xml tree from xlsx data one node at a time
 # make the nodes of our xml match the xml from "data/enl_xml_schema.txt"
 
-xml <- xmlTree() # start with an empty xml tree
+xml <- XML::xmlTree() # start with an empty xml tree
 xml$addNode("xml", close=FALSE) # add top-level nodes. adds an opening <xml> tag and leaves it open until we close it
 xml$addNode("records", close=FALSE) # another top-levle node. adds an opening <records> tag and leaves it open until we close it 
 for (i in 1:nrow(data)) { # for each row in our dataframe, we need to add these tags:
