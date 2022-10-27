@@ -6,6 +6,7 @@ library(readxl)
 library(dplyr)
 library(tidyverse)
 library(XML)
+library(xml2)
 
 ######################################
 ### read the Forms .xlsx output into R
@@ -34,7 +35,7 @@ data <-
 
 data2 <- data.frame(reference_type = "Journal", # make a fake record, so we can test iterating over multiple records
                     title = "Important science",
-                    authors = "Person Name",
+                    authors = "Jane Doe",
                     year = "1999",
                     files_attached = "https://usdagcc-my.sharepoint.com/personal/margaret_woodbridge_usda_gov/Documents/Apps",
                     where = "a place",
@@ -48,7 +49,7 @@ data <- rbind(data, data2) # add the fake record to data
 # make the nodes of our xml match the xml from "data/enl_xml_schema.txt"
 
 xml <- XML::xmlTree() # start with an empty xml tree
-xml$addNode("xml", close=FALSE) # add top-level nodes. adds an opening <xml> tag and leaves it open until we close it
+# xml$addNode("xml", close=FALSE) # add top-level nodes. adds an opening <xml> tag and leaves it open until we close it
 xml$addNode("records", close=FALSE) # another top-levle node. adds an opening <records> tag and leaves it open until we close it 
 for (i in 1:nrow(data)) { # for each row in our dataframe, we need to add these tags:
   xml$addTag("record", close=FALSE) # each row from data goes into its own <record> tag, leave the tag open until we close it
@@ -72,9 +73,9 @@ for (i in 1:nrow(data)) { # for each row in our dataframe, we need to add these 
   xml$closeTag() # add a closing tag to each: </record>
   }
 xml$closeTag() # close the records tag: </records>
-xml$closeTag() # close the xml tag: </xml>
+# xml$closeTag() # close the xml tag: </xml>
 cat(XML::saveXML(xml, prefix='<?xml version="1.0" encoding="UTF-8"?>')) # print to console the xml we just looped to create
-XML::saveXML(xml, prefix='<?xml version="1.0" encoding="UTF-8"?>', file = "data/testxml1.xml") # save xml to file, added to .gitignore
+# XML::saveXML(xml, prefix='<?xml version="1.0" encoding="UTF-8"?>', file = "data/testxml1.xml") # save xml to file, added to .gitignore
 
 # known problems with this xml tree, based on "scripts/xml_vs_schema_validation.R":
 
@@ -87,3 +88,101 @@ XML::saveXML(xml, prefix='<?xml version="1.0" encoding="UTF-8"?>', file = "data/
 
 
 ######################################
+# convert a real xml to dataframe
+# https://stackoverflow.com/questions/33446888/r-convert-xml-data-to-data-frame
+
+doc<-XML::xmlParse("data/real_enl_xml.xml")
+xmldf <- XML::xmlToDataFrame(nodes = getNodeSet(doc, "//record"))
+
+######################################
+# xml is basically the same data structure as a list in R
+# so how do we get our dataframe into nested list format that matches the format EndNote provides?
+
+# First, test that we can translate from list to xml and back reliably
+xml_test_in <- XML::xmlToList(XML::xmlParse("data/real_enl_xml.xml")) # translation from xml to list
+# xml_test_in <- xml2::as_list(xml2::read_xml("data/enl_xml_schema.txt"))
+xml_test_out <- xml2::as_xml_document(xml_test_in) # does not work, back-translate list to xml
+# XML::saveXML(xml_test, prefix='<?xml version="1.0" encoding="UTF-8"?>', file = "data/testxml1.xml") # save
+
+# simple list as proof of concept
+records <- list(records = list(
+  record = list(title = "titlehere")
+))
+cat(as.character(xml2::as_xml_document(records)))
+##
+
+# slightly more complicated nested list as proof of concept
+# create list with one record and nest down to a single nonsense text value
+records <- list(records = list(
+  record = list(
+    authors = list(
+      author = list(
+        text = "something"
+        )
+      )
+    )
+  )
+)
+cat(as.character(xml2::as_xml_document(records)))
+
+# then loop $authors values into the list
+data3 <- data.frame( # a dataframe with 1 records, 2 fields, 2 author names in a character string in one of the fields
+  record_id = c(1),
+  authors = c("Jimmi Hendrix; John Frusciante")
+)
+# build a nested list to hold this data frame
+records <- list(
+  records = list() # to cat out, we can only have one top-level node (i.e., length(list) == 1)
+)
+records[["records"]][["record"]] <- list()
+cat(as.character(xml2::as_xml_document(records)))
+
+authors_split <- str_split(data3$authors[1], "; ")
+records[["records"]][["record"]][["contributors"]] <- list(
+  # authors = structure(vector(mode = "list", length = length(authors_split[[1]]))),
+  authors = structure(list(
+    text = structure(list("personname"),attr1 = "name1", id = "a")
+  )),
+  editors = structure(list())
+)
+cat(as.character(xml2::as_xml_document(records)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+# useful syntax to build nested lists:
+
+as_xml_document(list(foo = list(
+  bar = structure(list(), id = "a"),
+  bar = structure(list(), id = "b")))) # how to add attributes to a list and output as xml
+
+
+
+
+
+
+
+
+
+
+
+
+
+##
+
+
+
+
+
+
+
+
