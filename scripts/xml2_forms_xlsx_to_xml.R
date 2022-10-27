@@ -71,8 +71,8 @@ for (i in 1:nrow(data)) { # for each row in our dataframe, we need to add these 
     xml_add_child(.x = testxml, .value = "database", name = "My Test library.enl", path = "C:\\Users\\mwroberts\\Documents\\My Test library.enl")
 }
 testxml
-# xml_remove(.x = "records")
-testxml
+cat(as.character(testxml)) # this is how you print to console
+
 
 rm(testxml)
 testxml <- xml2::xml_new_document() # how to instantiate a new xml document
