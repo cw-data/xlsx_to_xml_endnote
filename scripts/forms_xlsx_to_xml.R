@@ -73,8 +73,8 @@ for (i in 1:nrow(data)) { # for each row in our dataframe, we need to add these 
   }
 xml$closeTag() # close the records tag: </records>
 xml$closeTag() # close the xml tag: </xml>
-cat(saveXML(xml, prefix='<?xml version="1.0" encoding="UTF-8"?>')) # print to console the xml we just looped to create
-
+cat(XML::saveXML(xml, prefix='<?xml version="1.0" encoding="UTF-8"?>')) # print to console the xml we just looped to create
+XML::saveXML(xml, prefix='<?xml version="1.0" encoding="UTF-8"?>', file = "data/testxml1.xml") # save xml to file, added to .gitignore
 
 # known problems with this xml tree, based on "scripts/xml_vs_schema_validation.R":
 
@@ -84,3 +84,6 @@ cat(saveXML(xml, prefix='<?xml version="1.0" encoding="UTF-8"?>')) # print to co
 ### 2. Same thing as #1. <foreign-keys> tag is not present in "resources/RSXML.xsd" # resolved by removing tags and data <foreign-keys>data</foreign-keys> from "data/real_enl_xml.xml"
 ### 3. Same thingas #1. got <pdf-urls> but expected <image-urls>. # resolved by replacing tags <pdf-urls></pdf-urls> with <image-urls></image-urls> in "data/real_enl_xml.xml"
 ### with those changes, "data/real_enl_xml.xml" validates as TRUE "resources/RSXML.xsd"
+
+
+######################################
