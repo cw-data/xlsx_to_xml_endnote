@@ -158,7 +158,7 @@ cat(as.character(xml2::as_xml_document("data/enl_xml_schema.txt"))) # for compar
 # take the nested structure from above and loop to 'decide' how many <record> tags to create
 data3 <- data.frame( # a dataframe with 1 records, 2 fields, 2 author names in a character string in one of the fields
   record_id = c(1,2),
-  author = c("Jimmi Hendrix", "John Frusciante")
+  author = c("Jimi Hendrix", "John Frusciante")
 )
 
 # the basic structure we're shooting for, a list named 'records' with two elements named 'record'
@@ -190,31 +190,53 @@ for (row in n_rows) {
 names(records[["records"]]) <- rep("record", nrow(data3)) # set the name of each 'records' element to 'record', still troubleshooting how to add this into the loop
 cat(as.character(xml2::as_xml_document(records))) # print to console
 
-### step 3, add columns from df 'data3' as tags in each <record>
-n_cols <- seq(1:ncol(data3)) # a plain-english iterator variable (instead of 'i' and 'j')
-for (row in rows) {
-  for (col in n_cols) {
-    records[["records"]][[row]][[col]] <- list(record_id = list(),
-                                               author = list()) # loop to add an element to each 'record' for each column in df 'data3'
-    # names(records[[row]][[col]] <- colnames(data3))
-  }
+### step 3, loop to add columns from df 'data3' as tags in each <record>
+# in a perfect world, I'd build a list of colnames and iterate that list into each <record> tag like this:
+# df_cols_list <- vector(mode = "list", length = ncol(data3))
+# names(df_cols_list) <- colnames(data3)
+# for (row in rows) {
+#     records[["records"]][[row]] <- df_cols_list # loop to add a list with element names that match colnames(data3)
+#     }
+# cat(as.character(xml2::as_xml_document(records))) # but that breaks the xml output ??!!??!!
+
+# since building lists piecemeal breaks xml2::as_xml_document, I'll hard code the colnames for now
+# this is bad practice and I need to find a scaleable way to do this
+# for (row in n_rows) {
+#   records[["records"]][[row]] <- list(
+#     record_id = list(
+#       structure(list(face="normal", font="default", size="100%"))
+#       ), # add a record_id element for each <record> and add style arguments to match endnote
+#     author = list(
+#       structure(list(face="normal", font="default", size="100%")) # an author element for each <record> and add style arguments to match endnote
+#     )
+#   ) # loop to add an element to each 'record' for each column in df 'data3'
+# }
+# cat(as.character(xml2::as_xml_document(records))) # print to console
+
+
+
+for (row in n_rows) {
+  records[["records"]][[row]] <- list(
+    record_id = list()
+    , # add a record_id element for each <record> and add style arguments to match endnote
+    author = list(style = structure(list(), face="normal", font="default", size="100%")) # an author element for each <record> and add style arguments to match endnote
+    
+  ) # loop to add an element to each 'record' for each column in df 'data3'
+}
+
+
+
+### step 4, add values from df 'data3' as values in each <record>
+for (row in n_rows) {
+  for (col in n_cols)
+  records[["records"]][[row]][[1]]$text <- data3[row, 1] # loop data3$record_id values into $text for each <record>
+}
+for (row in n_rows) {
+  for (col in n_cols)
+    records[["records"]][[row]][[2]]$style$text <- data3[row, 2] # loop data3$author values into $style$text for each <record>
 }
 cat(as.character(xml2::as_xml_document(records))) # print to console
 
-
-
-
-
-
-
-# n_cols <- seq(1:ncol(data3)) # a plain-english iterator variable (instead of 'i' and 'j')
-# for (row in rows) {
-#   for (col in n_cols) {
-#     records[["records"]][[row]][[col]] <- list() # loop to add an element to each 'record' for each column in df 'data3'
-#   }
-# }
-# cat(as.character(xml2::as_xml_document(records))) # print to console
-# rm(records)
 
 
 
