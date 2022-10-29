@@ -115,15 +115,42 @@ cat(as.character(xml2::as_xml_document(records)))
 # create list with one record and nest down to a single nonsense text value
 records <- list(records = list(
   record = list(
-    authors = list(
-      author = list(
-        text = "something"
+    contributors = list(
+      authors = list(
+        author = list(
+          text = "something"
+        )
         )
       )
     )
   )
 )
 cat(as.character(xml2::as_xml_document(records)))
+
+
+# again, slightly more complicated nested list as proof of concept
+# create list with one record and nest down to a two nonsense text values
+records <- list(records = list(
+  record = list(
+    contributors = list(
+      authors = list(
+        author = list(
+          text = "something"
+          )
+        ),
+      titles = list(
+        title = list(
+          text = "a title"
+          )
+        )
+      )
+    )
+  )
+  )
+
+cat(as.character(xml2::as_xml_document(records)))
+cat(as.character(xml2::as_xml_document("data/enl_xml_schema.txt"))) # for comparison
+# save this output for testing in endnote
 
 # then loop $authors values into the list
 data3 <- data.frame( # a dataframe with 1 records, 2 fields, 2 author names in a character string in one of the fields
