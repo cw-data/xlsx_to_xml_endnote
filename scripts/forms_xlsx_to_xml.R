@@ -150,7 +150,112 @@ records <- list(records = list(
 
 cat(as.character(xml2::as_xml_document(records)))
 cat(as.character(xml2::as_xml_document("data/enl_xml_schema.txt"))) # for comparison
-# save this output for testing in endnote
+# xml2::write_xml(xml2::as_xml_document(records),
+#                 "data/testxml1.xml")# save this output for testing in endnote
+
+
+# again, slightly more complicated nested list as proof of concept
+# take the nested structure from above and loop to 'decide' how many <record> tags to create
+data3 <- data.frame( # a dataframe with 1 records, 2 fields, 2 author names in a character string in one of the fields
+  record_id = c(1,2),
+  author = c("Jimmi Hendrix", "John Frusciante")
+)
+
+# the basic structure we're shooting for, a list named 'records' with two elements named 'record'
+# but we want a loop to decide how many <record> tags to add, depending on how many rows are in our dataframe 'data3'
+# here's what the output is supposed to look like:
+records <- list( # create list named 'records'
+  records = list( # add root element named 'records'
+    record = list(), # add child element named 'record' for each record (i.e., a row in the df)
+    record = list() # add child element named 'record' for each record (i.e., a row in the df)
+    )
+  )
+cat(as.character(xml2::as_xml_document(records))) # print to console
+
+### step 1, create empty list with only a root element
+records <- list( # create list named 'records'
+  records = list( # add root element named 'records'
+  )
+)
+cat(as.character(xml2::as_xml_document(records))) # print to console
+
+### step 2, loop to add a list element for each record
+n_rows <- seq(1:nrow(data3)) # a plain-english iterator variable (instead of 'i' and 'j')
+# for (row in rows) { # sanity check for syntax
+#   print("hello")
+# }
+for (row in n_rows) {
+  records[["records"]][[row]] <- list() # loop to add an element to 'records' for each row in df 'data3'
+}
+names(records[["records"]]) <- rep("record", nrow(data3)) # set the name of each 'records' element to 'record', still troubleshooting how to add this into the loop
+cat(as.character(xml2::as_xml_document(records))) # print to console
+
+### step 3, add columns from df 'data3' as tags in each <record>
+n_cols <- seq(1:ncol(data3)) # a plain-english iterator variable (instead of 'i' and 'j')
+for (row in rows) {
+  for (col in n_cols) {
+    records[["records"]][[row]][[col]] <- list(record_id = list(),
+                                               author = list()) # loop to add an element to each 'record' for each column in df 'data3'
+    # names(records[[row]][[col]] <- colnames(data3))
+  }
+}
+cat(as.character(xml2::as_xml_document(records))) # print to console
+
+
+
+
+
+
+
+# n_cols <- seq(1:ncol(data3)) # a plain-english iterator variable (instead of 'i' and 'j')
+# for (row in rows) {
+#   for (col in n_cols) {
+#     records[["records"]][[row]][[col]] <- list() # loop to add an element to each 'record' for each column in df 'data3'
+#   }
+# }
+# cat(as.character(xml2::as_xml_document(records))) # print to console
+# rm(records)
+
+
+
+
+
+
+
+
+
+
+##
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # then loop $authors values into the list
 data3 <- data.frame( # a dataframe with 1 records, 2 fields, 2 author names in a character string in one of the fields
