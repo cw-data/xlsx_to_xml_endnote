@@ -228,11 +228,9 @@ for (row in n_rows) {
 
 ### step 4, add values from df 'data3' as values in each <record>
 for (row in n_rows) {
-  for (col in n_cols)
   records[["records"]][[row]][[1]]$text <- data3[row, 1] # loop data3$record_id values into $text for each <record>
 }
 for (row in n_rows) {
-  for (col in n_cols)
     records[["records"]][[row]][[2]]$style$text <- data3[row, 2] # loop data3$author values into $style$text for each <record>
 }
 cat(as.character(xml2::as_xml_document(records))) # print to console
