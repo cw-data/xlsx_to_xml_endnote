@@ -201,29 +201,13 @@ cat(as.character(xml2::as_xml_document(records))) # print to console
 
 # since building lists piecemeal breaks xml2::as_xml_document, I'll hard code the colnames for now
 # this is bad practice and I need to find a scaleable way to do this
-# for (row in n_rows) {
-#   records[["records"]][[row]] <- list(
-#     record_id = list(
-#       structure(list(face="normal", font="default", size="100%"))
-#       ), # add a record_id element for each <record> and add style arguments to match endnote
-#     author = list(
-#       structure(list(face="normal", font="default", size="100%")) # an author element for each <record> and add style arguments to match endnote
-#     )
-#   ) # loop to add an element to each 'record' for each column in df 'data3'
-# }
-# cat(as.character(xml2::as_xml_document(records))) # print to console
-
-
-
-for (row in n_rows) {
+for (row in n_rows) {  # loop to add a record_id and author element to each <record>
   records[["records"]][[row]] <- list(
-    record_id = list()
-    , # add a record_id element for each <record> and add style arguments to match endnote
+    record_id = list(), # add a record_id element for each <record> and add style arguments to match endnote
     author = list(style = structure(list(), face="normal", font="default", size="100%")) # an author element for each <record> and add style arguments to match endnote
-    
-  ) # loop to add an element to each 'record' for each column in df 'data3'
+  )
 }
-
+cat(as.character(xml2::as_xml_document(records))) # print to console
 
 
 ### step 4, add values from df 'data3' as values in each <record>
@@ -246,65 +230,6 @@ cat(as.character(xml2::as_xml_document(records))) # print to console
 
 
 ##
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# then loop $authors values into the list
-data3 <- data.frame( # a dataframe with 1 records, 2 fields, 2 author names in a character string in one of the fields
-  record_id = c(1),
-  authors = c("Jimmi Hendrix; John Frusciante")
-)
-# build a nested list to hold this data frame
-records <- list(
-  records = list() # to cat out, we can only have one top-level node (i.e., length(list) == 1)
-)
-records[["records"]][["record"]] <- list()
-cat(as.character(xml2::as_xml_document(records)))
-
-authors_split <- str_split(data3$authors[1], "; ")
-records[["records"]][["record"]][["contributors"]] <- list(
-  # authors = structure(vector(mode = "list", length = length(authors_split[[1]]))),
-  authors = structure(list(
-    text = structure(list("personname"),attr1 = "name1", id = "a")
-  )),
-  editors = structure(list())
-)
-cat(as.character(xml2::as_xml_document(records)))
-
-
-
-
-
-
-
 
 
 
