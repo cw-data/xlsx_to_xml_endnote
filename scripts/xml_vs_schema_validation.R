@@ -9,11 +9,11 @@
 
 library(xml2)
 # Example order
-doc <- read_xml(system.file("extdata/order-doc.xml", package = "xml2"))
+doc <- xml2::read_xml(system.file("extdata/order-doc.xml", package = "xml2"))
 
 # Example schema
-schema <- read_xml(system.file("extdata/order-schema.xml", package = "xml2"))
-xml_validate(doc, schema)
+schema <- xml2::read_xml(system.file("extdata/order-schema.xml", package = "xml2"))
+xml2::xml_validate(doc, schema)
 # TRUE
 
 ########################################
@@ -26,11 +26,11 @@ xml_validate(doc, schema)
 ### In pycharm: tools -> xml actions -> convert schema...
 ### I chose output type 'RELAX NG - XML Syntax' with UTF-8 encoding, indent 4, and line length 120.
 ### I don't know if these output parameters are EndNote-acceptable, but it's a start.
-schema2 <- read_xml("resources/RSXML.xsd") # this is a real xml schema document converted from from endnote's official document type definition # https://support.clarivate.com/Endnote/s/article/EndNote-XML-Document-Type-Definition?language=en_US
+schema2 <- xml2::read_xml("resources/RSXML.xsd") # this is a real xml schema document converted from from endnote's official document type definition # https://support.clarivate.com/Endnote/s/article/EndNote-XML-Document-Type-Definition?language=en_US
 
 # 2) second, we need a real endnote-generated xml from a real .enl library
 # doc2 <- read_xml("data/enl_xml_schema.txt") # This is the original xml of one record exported from endnote
-doc2 <- read_xml("data/real_enl_xml.xml") # this is a copy of enl_xml_schema.txt, saved as .xml, and then edited (as shown below) until it passed verification against "resources/RSXML.xsd"
+doc2 <- xml2::read_xml("data/real_enl_xml.xml") # this is a copy of enl_xml_schema.txt, saved as .xml, and then edited (as shown below) until it passed verification against "resources/RSXML.xsd"
 # enl_xml_schema.txt failed validation because:
 ### <xml> tag is not present in "resources/RSXML.xsd" # resolved by removing tags <xml></xml> from "data/real_enl_xml.xml"
 ### <foreign-keys> tag is not present in "resources/RSXML.xsd" # resolved by removing tags and data <foreign-keys>data</foreign-keys> from "data/real_enl_xml.xml"
@@ -38,4 +38,4 @@ doc2 <- read_xml("data/real_enl_xml.xml") # this is a copy of enl_xml_schema.txt
 ### with those changes, "data/real_enl_xml.xml" validates as TRUE "resources/RSXML.xsd"
 
 # 3) then, we need to validate that the schema we generated and the the xml record from endnote align
-xml_validate(doc2, schema2)
+xml2::xml_validate(doc2, schema2)
