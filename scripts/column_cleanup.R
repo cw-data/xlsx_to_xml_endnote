@@ -4,6 +4,8 @@ rm(list = ls())
 library(xml2)
 library(tidyverse)
 library(readxl)
+library(tidyr)
+library(data.table)
 
 ########## Step 1: read in xlsx as dataframe
 book <- readxl::read_excel("data/example_book_section.xlsx")
@@ -173,29 +175,33 @@ missing_values <- lookup %>%
 
 
 
+########################  how to change colnames based on logic
+# Method 1: rename_at statements
+# a small example to wrap my head around:
+test_book <- book[,grep("Title", colnames(book), ignore.case=TRUE)] %>% # select column names that contain the case-insensitive word "title" (for an example only; real would take df book)
+    dplyr::select_if(~ !any(is.na(.))) %>% # then keep only "title" columns that have non-NA values
+    dplyr::rename_at(vars(contains("series title")), # if the colname contains case-insensitive "series title" # https://blog.exploratory.io/renaming-column-names-for-multiple-columns-together-9d216e37bf41
+                     funs(str_replace(., "Series Title.*", "title"))) # regex replace # https://stackoverflow.com/questions/16577432/non-greedy-string-regular-expression-matching
+# my concern with method 1:
+# we're going to have a ton of repeated code. I think we'd repeat most of the string-matching logic for each type of reference (i.e., each group of columns with non-NA values)
+# I think it's going to get confusing to write regex to make rename_at matching work right.
+# When we eventually had good regex logic, it'd still be tough to maintain it in the future if column names changed.
+
+# Method 2: lookup table
+# a small example to wrap my head around:
+test_book <- book
+data.table::setDT(test_book)
+lookup2 <- lookup %>% # using the lookup table means you only have to maintain the rename logic in one place: the lookup table
+    dplyr::filter(!is.na(xml_tag)) # filtering out NAs until we completely fill in the lookup table
+test_book <- test_book %>%
+    dplyr::select_if(~ !any(is.na(.))) # select only the columns with non-NA values
+data.table::setnames(test_book, old = lookup2$xlsx_colname, new = lookup2$xml_tag, skip_absent = TRUE) # use the lookup table to set column names
+# I think method 2 will require far less code which will make it easier to understand and maintain
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Step 3: create an empty dataframe with the colnames we want
-# use unique(lookup$xml_tag) to assign colnames for this empty dataframe
 
 # scratchpad:
-# extract any column with 'title' in the colum name
+# extract any column with 'title' in the column name
 titles <- book[,grep("Title", colnames(book), ignore.case=TRUE)] # https://stackoverflow.com/questions/5671719/case-insensitive-search-of-a-list-in-r
 # keep only columns with non-NA values
 test <- titles %>% dplyr::select_if(~ !any(is.na(.))) # https://www.statology.org/remove-columns-with-na-in-r/
-
-
-
