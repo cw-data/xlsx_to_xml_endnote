@@ -205,3 +205,15 @@ data.table::setnames(test_book, old = lookup2$xlsx_colname, new = lookup2$xml_ta
 titles <- book[,grep("Title", colnames(book), ignore.case=TRUE)] # https://stackoverflow.com/questions/5671719/case-insensitive-search-of-a-list-in-r
 # keep only columns with non-NA values
 test <- titles %>% dplyr::select_if(~ !any(is.na(.))) # https://www.statology.org/remove-columns-with-na-in-r/
+
+
+excel_example <- readxl::read_excel("data/20221116_excel_example.xlsx")
+library(xml2)
+library(XML)
+
+# how to make xml into a list
+# endnote_example <- XML::xmlToList(XML::xmlParse("data/20221116_endnote_example.xml")) # the top-level tag here is <records> which does not match the top tag in data/20221116_endnote_example.xml
+endnote_example2 <- xml2::as_list(xml2::read_xml("data/20221116_endnote_example.xml")) # the top-level tag here is <xml>, which seems to match the top tag in data/20221116_endnote_example.xml
+
+endnote_example3 <- xml2::read_xml("data/20221116_endnote_example.xml")
+cat(as.character(endnote_example3))
