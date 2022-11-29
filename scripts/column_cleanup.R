@@ -178,10 +178,10 @@ missing_values <- lookup %>%
 ########################  how to change colnames based on logic
 # Method 1: rename_at statements
 # a small example to wrap my head around:
-test_book <- book[,grep("Title", colnames(book), ignore.case=TRUE)] %>% # select column names that contain the case-insensitive word "title" (for an example only; real would take df book)
-    dplyr::select_if(~ !any(is.na(.))) %>% # then keep only "title" columns that have non-NA values
-    dplyr::rename_at(vars(contains("series title")), # if the colname contains case-insensitive "series title" # https://blog.exploratory.io/renaming-column-names-for-multiple-columns-together-9d216e37bf41
-                     funs(str_replace(., "Series Title.*", "title"))) # regex replace # https://stackoverflow.com/questions/16577432/non-greedy-string-regular-expression-matching
+# test_book <- book[,grep("Title", colnames(book), ignore.case=TRUE)] %>% # select column names that contain the case-insensitive word "title" (for an example only; real would take df book)
+#     dplyr::select_if(~ !any(is.na(.))) %>% # then keep only "title" columns that have non-NA values
+#     dplyr::rename_at(vars(contains("series title")), # if the colname contains case-insensitive "series title" # https://blog.exploratory.io/renaming-column-names-for-multiple-columns-together-9d216e37bf41
+#                      funs(str_replace(., "Series Title.*", "title"))) # regex replace # https://stackoverflow.com/questions/16577432/non-greedy-string-regular-expression-matching
 # my concern with method 1:
 # we're going to have a ton of repeated code. I think we'd repeat most of the string-matching logic for each type of reference (i.e., each group of columns with non-NA values)
 # I think it's going to get confusing to write regex to make rename_at matching work right.
@@ -197,6 +197,59 @@ test_book <- test_book %>%
     dplyr::select_if(~ !any(is.na(.))) # select only the columns with non-NA values
 data.table::setnames(test_book, old = lookup2$xlsx_colname, new = lookup2$xml_tag, skip_absent = TRUE) # use the lookup table to set column names
 # I think method 2 will require far less code which will make it easier to understand and maintain
+
+########################  change dataframe to list
+### step 1, create empty list with only a root element
+nextexample <- list(
+    xml = list(
+        records = list()
+    ) # create list named 'records'
+)
+cat(as.character(xml2::as_xml_document(nextexample))) # print to console
+
+### step 2, loop to add a list element for each record
+n_rows <- seq(1:nrow(test_book)) # a plain-english iterator variable (instead of 'i' and 'j')
+# for (row in rows) { # sanity check for syntax
+#   print("hello")
+# }
+for (row in n_rows) {
+    nextexample[["xml"]][["records"]][[row]] <- list() # loop to add an element to 'records' for each row in df 'data3'
+}
+names(nextexample[["xml"]][["records"]]) <- rep("record", nrow(test_book)) # set the name of each 'records' element to 'record', still troubleshooting how to add this into the loop
+cat(as.character(xml2::as_xml_document(nextexample))) # print to console
+
+### step 3, loop to add columns from df 'data3' as tags in each <record>
+# in a perfect world, I'd build a list of colnames and iterate that list into each <record> tag like this:
+# df_cols_list <- vector(mode = "list", length = ncol(data3))
+# names(df_cols_list) <- colnames(data3)
+# for (row in rows) {
+#     records[["records"]][[row]] <- df_cols_list # loop to add a list with element names that match colnames(data3)
+#     }
+# cat(as.character(xml2::as_xml_document(records))) # but that breaks the xml output ??!!??!!
+
+# since building lists piecemeal breaks xml2::as_xml_document, I'll hard code the colnames for now
+# this is bad practice and I need to find a scaleable way to do this
+for (row in n_rows) {  # loop to add a record_id and author element to each <record>
+    nextexample[["xml"]][["records"]][[row]] <- list(
+        record_id = list(), # add a record_id element for each <record> and add style arguments to match endnote
+        author = list(style = structure(list(), face="normal", font="default", size="100%")) # an author element for each <record> and add style arguments to match endnote
+    )
+}
+cat(as.character(xml2::as_xml_document(nextexample))) # print to console
+
+
+### step 4, add values from df 'data3' as values in each <record>
+for (row in n_rows) {
+    nextexample[["xml"]][["records"]][[row]][[1]]$text <- as.character(test_book[row, 1]) # loop test_book$record_id values into $text for each <record>
+    # must be as.character() in this loop to change pointer `test_book[row, 1]` into xml2-readable character string...
+}
+for (row in n_rows) {
+    nextexample[["xml"]][["records"]][[row]][[2]]$style$text <- as.character(test_book[row, 2]) # loop test_book$author values into $style$text for each <record>
+}
+cat(as.character(xml2::as_xml_document(nextexample))) # print to console
+# nextexample2 <- xml2::as_xml_document(nextexample) # change object to `xml document` type
+
+
 
 
 
