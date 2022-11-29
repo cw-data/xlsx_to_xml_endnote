@@ -218,31 +218,46 @@ for (row in n_rows) {
 names(nextexample[["xml"]][["records"]]) <- rep("record", nrow(test_book)) # set the name of each 'records' element to 'record', still troubleshooting how to add this into the loop
 cat(as.character(xml2::as_xml_document(nextexample))) # print to console
 
-### step 3, loop to add columns from df 'test_book' as tags in each <record>
-# instead, I need to add into each <record> an empty list() with the correct nesting structure that's named for each column in test_book:
+### step 3, loop to add columns from df 'data3' as tags in each <record>
+# instead, I need to add into each <record> an empty list() named for each column in test_book:
 df_cols_list <- vector(mode = "list", length = ncol(test_book))
 names(df_cols_list) <- colnames(test_book)
-# first, confirm that we can insert empty, un-nested lists with the correct names:
-for (i in 1:length(df_cols_list)) {
+# now, add correct nesting structure for each list
+# df_cols_list$`ref-type` <- list(name = structure(list()), test = "test")
+# figure out what the correct structure is:
+endnote_example <- xml2::read_xml("data/20221116_endnote_example.xml")
+xml_structure(endnote_example) # can I just take this structure and copy it like a template for each record of each ref-type???
+
+# step 3.x: repeat for each tag so the structure is correct
+# step 3.a: make <ref-type> match xml endnote_example
+# list(style = structure(list(), face="normal", font="default", size="100%"))
+# <ref-type name="Web Page">12</ref-type>
+library(xml2)
+library(tibble)
+# re-create the ref-type dictionary EndNote uses:
+xml_find_all(endnote_example, xpath = "//ref-type") # find the key-value pairs we need to extract 
+ref_lookup <- tibble(number = xml2::xml_text(xml2::xml_find_all(endnote_example, xpath = "//ref-type")), # taken from here: https://www.robwiederstein.org/2021/03/05/xml-to-dataframe/
+                     value = xml2::xml_attrs(xml2::xml_find_all(endnote_example, xpath = "//ref-type")))
+
+df_cols_list$`ref-type` <- structure(list(), name = as.character(test_book[1, 1]))
+for (i in 2:length(df_cols_list)) {
     df_cols_list[[i]] <- list()
-    }
+}
+
 for (row in n_rows) {
     nextexample[["xml"]][["records"]][[row]] <- df_cols_list # loop to add a list with element names that match colnames(data3)
 }
-cat(as.character(xml2::as_xml_document(nextexample)))
 
-
-### step 4, add values from df 'test_book' as values in each <record>
+### step 4, add values from df 'data3' as values in each <record>
 for (row in n_rows) {
-    nextexample[["xml"]][["records"]][[row]][[1]]$text <- as.character(test_book[row, 1]) # loop test_book$record_id values into $text for each <record>
+    nextexample$xml$records[[row]]$`ref-type`$text <- as.character(ref_lookup[2, 1]) # loop ref_lookup$value into $text for each <record><ref-type>
     # must be as.character() in this loop to change pointer `test_book[row, 1]` into xml2-readable character string...
 }
-for (row in n_rows) {
-    nextexample[["xml"]][["records"]][[row]][[2]]$style$text <- as.character(test_book[row, 2]) # loop test_book$author values into $style$text for each <record>
-}
+# for (row in n_rows) {
+#     nextexample[["xml"]][["records"]][[row]][["author"]]$style$text <- as.character(test_book[row, 2]) # loop test_book$author values into $style$text for each <record>
+# }
 cat(as.character(xml2::as_xml_document(nextexample))) # print to console
-# nextexample2 <- xml2::as_xml_document(nextexample) # change object to `xml document` type
-
+# nextexample2 <- xml2::as_xml_document(nextexample)
 
 
 
