@@ -219,13 +219,17 @@ names(nextexample[["xml"]][["records"]]) <- rep("record", nrow(test_book)) # set
 cat(as.character(xml2::as_xml_document(nextexample))) # print to console
 
 ### step 3, loop to add columns from df 'test_book' as tags in each <record>
-for (row in n_rows) {  # loop to add a record_id and author element to each <record>
-    nextexample[["xml"]][["records"]][[row]] <- list(
-        record_id = list(), # add a record_id element for each <record> and add style arguments to match endnote
-        author = list(style = structure(list(), face="normal", font="default", size="100%")) # an author element for each <record> and add style arguments to match endnote
-    )
+# instead, I need to add into each <record> an empty list() with the correct nesting structure that's named for each column in test_book:
+df_cols_list <- vector(mode = "list", length = ncol(test_book))
+names(df_cols_list) <- colnames(test_book)
+# first, confirm that we can insert empty, un-nested lists with the correct names:
+for (i in 1:length(df_cols_list)) {
+    df_cols_list[[i]] <- list()
+    }
+for (row in n_rows) {
+    nextexample[["xml"]][["records"]][[row]] <- df_cols_list # loop to add a list with element names that match colnames(data3)
 }
-cat(as.character(xml2::as_xml_document(nextexample))) # print to console
+cat(as.character(xml2::as_xml_document(nextexample)))
 
 
 ### step 4, add values from df 'test_book' as values in each <record>
