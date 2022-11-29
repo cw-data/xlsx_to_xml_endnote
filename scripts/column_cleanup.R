@@ -11,7 +11,7 @@ library(data.table)
 book <- readxl::read_excel("data/example_book_section.xlsx")
 book <- 
     book %>% # remove columns from 'book' that we know won't have an xml tag
-    select(-c('ID', 'Start time', 'Completion time', 'Email', 'Name'))
+    select(-c('ID', 'Start time', 'Completion time', 'Email', 'Name')) # confirm that we don't want to Forms metadata in EndNote
 ##########  Step 2: make a lookup table. A dataframe that has each xlsx column name and its equivalent xml tag.
 xlsx_colname <- colnames(book) # capture the xlsx column names in an array
 lookup <- data.frame( # make a dataframe named 'lookup'
@@ -218,17 +218,7 @@ for (row in n_rows) {
 names(nextexample[["xml"]][["records"]]) <- rep("record", nrow(test_book)) # set the name of each 'records' element to 'record', still troubleshooting how to add this into the loop
 cat(as.character(xml2::as_xml_document(nextexample))) # print to console
 
-### step 3, loop to add columns from df 'data3' as tags in each <record>
-# in a perfect world, I'd build a list of colnames and iterate that list into each <record> tag like this:
-# df_cols_list <- vector(mode = "list", length = ncol(data3))
-# names(df_cols_list) <- colnames(data3)
-# for (row in rows) {
-#     records[["records"]][[row]] <- df_cols_list # loop to add a list with element names that match colnames(data3)
-#     }
-# cat(as.character(xml2::as_xml_document(records))) # but that breaks the xml output ??!!??!!
-
-# since building lists piecemeal breaks xml2::as_xml_document, I'll hard code the colnames for now
-# this is bad practice and I need to find a scaleable way to do this
+### step 3, loop to add columns from df 'test_book' as tags in each <record>
 for (row in n_rows) {  # loop to add a record_id and author element to each <record>
     nextexample[["xml"]][["records"]][[row]] <- list(
         record_id = list(), # add a record_id element for each <record> and add style arguments to match endnote
@@ -238,7 +228,7 @@ for (row in n_rows) {  # loop to add a record_id and author element to each <rec
 cat(as.character(xml2::as_xml_document(nextexample))) # print to console
 
 
-### step 4, add values from df 'data3' as values in each <record>
+### step 4, add values from df 'test_book' as values in each <record>
 for (row in n_rows) {
     nextexample[["xml"]][["records"]][[row]][[1]]$text <- as.character(test_book[row, 1]) # loop test_book$record_id values into $text for each <record>
     # must be as.character() in this loop to change pointer `test_book[row, 1]` into xml2-readable character string...
