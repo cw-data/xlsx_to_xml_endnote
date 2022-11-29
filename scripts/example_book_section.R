@@ -20,6 +20,12 @@ book <- readxl::read_excel("data/example_book_section.xlsx")
 # Step 2: combine repeated columns
 # column_cleanup.R is in development. Once logic is finalized there, make it into a function that we call from here.
 
+# Step 3: make dataframe into R list
+
+# step 4: convert list into xml
+# endnote_example2 <- xml2::as_list(xml2::read_xml("data/20221116_endnote_example.xml")) # an example R list
+endnote_example3 <- xml2::as_xml_document(endnote_example2) # how to convert an R list into xml
+# cat(as.character(endnote_example3)) # pretty-print list to console
 
 #################### B1) visually. Print xml to console and look at it. Does the xml look right?
 cat(as.character(xml2::as_xml_document(records))) # print to console
