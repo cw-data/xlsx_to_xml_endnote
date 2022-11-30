@@ -6,6 +6,7 @@ library(tidyverse)
 library(readxl)
 library(tidyr)
 library(data.table)
+library(tibble)
 
 ########## Step 1: read in xlsx as dataframe
 book <- readxl::read_excel("data/example_book_section.xlsx")
@@ -59,7 +60,7 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
 # <author>
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("author", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
-    'author', # assign this value
+    'authors', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 # <attach-files>
@@ -175,19 +176,7 @@ missing_values <- lookup %>%
 
 
 
-########################  how to change colnames based on logic
-# Method 1: rename_at statements
-# a small example to wrap my head around:
-# test_book <- book[,grep("Title", colnames(book), ignore.case=TRUE)] %>% # select column names that contain the case-insensitive word "title" (for an example only; real would take df book)
-#     dplyr::select_if(~ !any(is.na(.))) %>% # then keep only "title" columns that have non-NA values
-#     dplyr::rename_at(vars(contains("series title")), # if the colname contains case-insensitive "series title" # https://blog.exploratory.io/renaming-column-names-for-multiple-columns-together-9d216e37bf41
-#                      funs(str_replace(., "Series Title.*", "title"))) # regex replace # https://stackoverflow.com/questions/16577432/non-greedy-string-regular-expression-matching
-# my concern with method 1:
-# we're going to have a ton of repeated code. I think we'd repeat most of the string-matching logic for each type of reference (i.e., each group of columns with non-NA values)
-# I think it's going to get confusing to write regex to make rename_at matching work right.
-# When we eventually had good regex logic, it'd still be tough to maintain it in the future if column names changed.
-
-# Method 2: lookup table
+########################  Use a lookup table to change colnames
 # a small example to wrap my head around:
 test_book <- book
 data.table::setDT(test_book)
@@ -201,54 +190,170 @@ data.table::setnames(test_book, old = lookup2$xlsx_colname, new = lookup2$xml_ta
 ########################  change dataframe to list
 ### step 1, create empty list with only a root element
 nextexample <- list(
-    xml = list(
-        records = list()
-    ) # create list named 'records'
+    xml = list( # root element
+        records = list() # create list named 'records'
+    )
 )
 cat(as.character(xml2::as_xml_document(nextexample))) # print to console
 
-### step 2, loop to add a list element for each record
-n_rows <- seq(1:nrow(test_book)) # a plain-english iterator variable (instead of 'i' and 'j')
-# for (row in rows) { # sanity check for syntax
-#   print("hello")
-# }
-for (row in n_rows) {
-    nextexample[["xml"]][["records"]][[row]] <- list() # loop to add an element to 'records' for each row in df 'data3'
-}
-names(nextexample[["xml"]][["records"]]) <- rep("record", nrow(test_book)) # set the name of each 'records' element to 'record', still troubleshooting how to add this into the loop
-cat(as.character(xml2::as_xml_document(nextexample))) # print to console
+### step 2, make template xml tag structure from 'Map of XLSX <- XML fields' in '20221022_endnote_dev.docx' into a list we loop into each <record>
 
-### step 3, loop to add columns from df 'data3' as tags in each <record>
-# instead, I need to add into each <record> an empty list() named for each column in test_book:
-df_cols_list <- vector(mode = "list", length = ncol(test_book))
-names(df_cols_list) <- colnames(test_book)
-# now, add correct nesting structure for each list
-# df_cols_list$`ref-type` <- list(name = structure(list()), test = "test")
 # figure out what the correct structure is:
 endnote_example <- xml2::read_xml("data/20221116_endnote_example.xml")
-xml_structure(endnote_example) # can I just take this structure and copy it like a template for each record of each ref-type???
+xml_structure(endnote_example) # this shows the tag structure we need to match
 
-# step 3.x: repeat for each tag so the structure is correct
-# step 3.a: make <ref-type> match xml endnote_example
-# list(style = structure(list(), face="normal", font="default", size="100%"))
-# <ref-type name="Web Page">12</ref-type>
-library(xml2)
-library(tibble)
-# re-create the ref-type dictionary EndNote uses:
-xml_find_all(endnote_example, xpath = "//ref-type") # find the key-value pairs we need to extract 
-ref_lookup <- tibble(number = xml2::xml_text(xml2::xml_find_all(endnote_example, xpath = "//ref-type")), # taken from here: https://www.robwiederstein.org/2021/03/05/xml-to-dataframe/
-                     value = xml2::xml_attrs(xml2::xml_find_all(endnote_example, xpath = "//ref-type")))
+# build a list to match the tag structure of `endnote_example`
+# each <record> will get a copy of this top-level tag structure
+# if the <record> doesn't have data to route into these tags, we'll send empty tags to EndNote (and hopefully EndNote can deal with empty tags...)
+tag_template <- vector(mode = "list", length = 15) # an empty list to hold tag-structure for each <record>
+# I found that length = number by counting XML tags in 'Map of XLSX <- XML fields' in '20221022_endnote_dev.docx'
+# the top-level tags are:
+# 1: <ref-type>
+# 2: <titles>
+# 3: <contributors>
+# 4: <dates>
+# 5: <keywords>
+# 6: <research-notes>
+# 7: <electronic-resource-num>
+# 8: <volume>
+# 9: <number>
+# 10: <pages>
+# 11: <pub-location>
+# 12: <publisher>
+# 13: <edition>
+# 14: <num-vols>
+# 15: <section>
 
-df_cols_list$`ref-type` <- structure(list(), name = as.character(test_book[1, 1]))
-for (i in 2:length(df_cols_list)) {
-    df_cols_list[[i]] <- list()
-}
+names(tag_template)[1] <- "ref-type"
+names(tag_template)[2] <- "titles"
+names(tag_template)[3] <- "contributors"
+names(tag_template)[4] <- "dates"
+names(tag_template)[5] <- "keywords"
+names(tag_template)[6] <- "research-notes"
+names(tag_template)[7] <- "electronic-resource-num"
+names(tag_template)[8] <- "volume"
+names(tag_template)[9] <- "number"
+names(tag_template)[10] <- "pages"
+names(tag_template)[11] <- "pub-location"
+names(tag_template)[12] <- "publisher"
+names(tag_template)[13] <- "edition"
+names(tag_template)[14] <- "num-vols"
+names(tag_template)[15] <- "section"
+tag_template # sanity check
 
+# 1: <ref-type>
+# EndNote uses a dictionary to provide a ref-type number for each ref-type name (e.g., "Book" is ref-type #6)
+# we need to re-create that dictionary
+endnote_example <- xml2::read_xml("data/20221116_endnote_example.xml")
+xml_find_all(endnote_example, xpath = "//ref-type") # these are the key-value pairs we need to extract 
+ref_dict <- tibble::tibble(number = xml2::xml_text(xml2::xml_find_all(endnote_example, xpath = "//ref-type")), # extract key-value pairs
+                           value = xml2::xml_attrs(xml2::xml_find_all(endnote_example, xpath = "//ref-type"))) # protocol from: https://www.robwiederstein.org/2021/03/05/xml-to-dataframe/
+tag_template$`ref-type` <- structure(list(), # tag should be an empty list that we will loop ref_dict$number into
+                                     name = list()) # an empty attribute named $name that we will loop ref_dict$value into
+tag_template[["ref-type"]] # sanity check
+
+# 2: <titles>
+tag_template$`titles` <- structure(list( # $titles has three sub-tags: 1) title, 2) secondary-title, and 3: tertiary title
+    title = structure(list( # each sub-tag has a <style> tag
+        style = structure(list(), # each <style> tag is an empty list (where we route the reference's title data) and three attributes: 1) face, 2) font, and 3) size
+                          face = "normal",
+                          font = "default",
+                          size = "100%"))),
+    `secondary-title` = structure(list( # each sub-tag has a <style> tag
+        style = structure(list(), # each <style> tag is an empty list (where we route the reference's title data) and three attributes: 1) face, 2) font, and 3) size
+                          face = "normal",
+                          font = "default",
+                          size = "100%"))),
+    `tertiary-title` = structure(list( # each sub-tag has a <style> tag
+        style = structure(list(), # each <style> tag is an empty list (where we route the reference's title data) and three attributes: 1) face, 2) font, and 3) size
+                          face = "normal",
+                          font = "default",
+                          size = "100%")))))# need to loop <author> tags for each author name
+tag_template$`titles` # sanity check
+
+# 3: <contributors>
+tag_template$`contributors` <- structure(list( # $titles has three sub-tags: 1) title, 2) secondary-title, and 3: tertiary title
+    authors = list(),
+    `secondary-authors` = list(),
+    `tertiary-authors` = list())) # an empty list for us to loop <author> tags into
+tag_template$`contributors` # sanity check
+author <- structure(list( # an empty list we loop to add an author name into to $contributors$authors or $contributors$`secondary-authors` or $contributors$`tertiary-authors`
+    style = structure(list(), # each <style> tag is an empty list (where we route the reference's author name) and three attributes: 1) face, 2) font, and 3) size
+                      face = "normal",
+                      font = "default",
+                      size = "100%")))
+author # sanity check
+
+# 4: <dates>
+tag_template$`dates` <- structure(list( # $dates has two possible sub-tags: 1) year, 2) pub-date
+    year = structure(list( # <dates><year><style>
+        style = structure(list(), # each <style> tag is an empty list (where we route the reference's year data) and three attributes: 1) face, 2) font, and 3) size
+                          face = "normal",
+                          font = "default",
+                          size = "100%"))),
+    `pub-date` = structure(list( # <dates><pub-date><date><style>
+        date = structure(list( # each <pub-date> tag has one <date> tag which has a <style> tag
+            style =structure(list(), # each <style> tag is an empty list (where we route the reference's $`pub-date`$date data) and three attributes: 1) face, 2) font, and 3) size
+                             face = "normal",
+                             font = "default",
+                             size = "100%")))))))
+tag_template$`dates` # sanity check
+
+# 5: <keywords>
+tag_template$keywords <- list() # $keywords needs to be an empty list to receive <keyword> tags
+`keyword` <- structure(list( # an empty list we loop to add a <keyword> element $keywords
+    style = structure(list(), # each <keyword> has <style> tag is an empty list (where we route individual keywords) and three attributes: 1) face, 2) font, and 3) size
+                      face = "normal",
+                      font = "default",
+                      size = "100%")))
+keyword
+
+# 6: <research-notes>
+tag_template$`research-notes` <- structure(list( # one empty list that receives research notes
+    style = structure(list(), # each <research-notes> tag has a <style> tag is an empty list (where we route the research notes for a record) and three attributes: 1) face, 2) font, and 3) size
+                      face = "normal",
+                      font = "default",
+                      size = "100%")))
+tag_template$`research-notes`
+
+# 7: <electronic-resource-num>
+tag_template$`electronic-resource-num` <- structure(list( # one empty list that receives the record's single resource number (Stable URL or DOI)
+    style = structure(list(), # each <electronic-resource-num> tag has a <style> tag is an empty list (where we route the URL for a record) and three attributes: 1) face, 2) font, and 3) size
+                      face = "normal",
+                      font = "default",
+                      size = "100%")))
+tag_template$`electronic-resource-num`
+
+# 8: <volume>
+tag_template$`volume` <- structure(list( # one empty list that receives the record's single volume (Volume # or Degree)
+    style = structure(list(), # each <volume> tag has a <style> tag is an empty list (where we route the volume or degree for a record) and three attributes: 1) face, 2) font, and 3) size
+                      face = "normal",
+                      font = "default",
+                      size = "100%")))
+tag_template$`volume`
+# 9: <number>
+# 10: <pages>
+# 11: <pub-location>
+# 12: <publisher>
+# 13: <edition>
+# 14: <num-vols>
+# 15: <section>
+
+
+
+
+
+
+cat(as.character(xml2::as_xml_document(endnote_example)))
+
+### step 3, add template list from step 2 for each record
+n_rows <- seq(1:nrow(test_book)) # a plain-english iterator variable (instead of 'i' and 'j')
 for (row in n_rows) {
-    nextexample[["xml"]][["records"]][[row]] <- df_cols_list # loop to add a list with element names that match colnames(data3)
+    nextexample[["xml"]][["records"]][[row]] <- df_cols_list # loop to add a template list with element names that match tags in 
 }
+cat(as.character(xml2::as_xml_document(nextexample))) # print to console
 
-### step 4, add values from df 'data3' as values in each <record>
+### step 4, route values from df into each <record>
 for (row in n_rows) {
     nextexample$xml$records[[row]]$`ref-type`$text <- as.character(ref_lookup[2, 1]) # loop ref_lookup$value into $text for each <record><ref-type>
     # must be as.character() in this loop to change pointer `test_book[row, 1]` into xml2-readable character string...
@@ -260,22 +365,3 @@ cat(as.character(xml2::as_xml_document(nextexample))) # print to console
 # nextexample2 <- xml2::as_xml_document(nextexample)
 
 
-
-
-# scratchpad:
-# extract any column with 'title' in the column name
-titles <- book[,grep("Title", colnames(book), ignore.case=TRUE)] # https://stackoverflow.com/questions/5671719/case-insensitive-search-of-a-list-in-r
-# keep only columns with non-NA values
-test <- titles %>% dplyr::select_if(~ !any(is.na(.))) # https://www.statology.org/remove-columns-with-na-in-r/
-
-
-excel_example <- readxl::read_excel("data/20221116_excel_example.xlsx")
-library(xml2)
-library(XML)
-
-# how to make xml into a list
-# endnote_example <- XML::xmlToList(XML::xmlParse("data/20221116_endnote_example.xml")) # the top-level tag here is <records> which does not match the top tag in data/20221116_endnote_example.xml
-endnote_example2 <- xml2::as_list(xml2::read_xml("data/20221116_endnote_example.xml")) # the top-level tag here is <xml>, which seems to match the top tag in data/20221116_endnote_example.xml
-
-endnote_example3 <- xml2::read_xml("data/20221116_endnote_example.xml")
-cat(as.character(endnote_example3))
