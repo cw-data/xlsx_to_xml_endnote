@@ -250,7 +250,7 @@ ref_dict <- tibble::tibble(number = xml2::xml_text(xml2::xml_find_all(endnote_ex
                            value = xml2::xml_attrs(xml2::xml_find_all(endnote_example, xpath = "//ref-type"))) # protocol from: https://www.robwiederstein.org/2021/03/05/xml-to-dataframe/
 tag_template$`ref-type` <- structure(list(), # tag should be an empty list that we will loop ref_dict$number into
                                      name = list()) # an empty attribute named $name that we will loop ref_dict$value into
-tag_template[["ref-type"]] # sanity check
+# tag_template[["ref-type"]] # sanity check
 
 # 2: <titles>
 tag_template$`titles` <- structure(list( # $titles has three sub-tags: 1) title, 2) secondary-title, and 3: tertiary title
@@ -269,20 +269,20 @@ tag_template$`titles` <- structure(list( # $titles has three sub-tags: 1) title,
                           face = "normal",
                           font = "default",
                           size = "100%")))))# need to loop <author> tags for each author name
-tag_template$`titles` # sanity check
+# tag_template$`titles` # sanity check
 
 # 3: <contributors>
 tag_template$`contributors` <- structure(list( # $titles has three sub-tags: 1) title, 2) secondary-title, and 3: tertiary title
     authors = list(),
     `secondary-authors` = list(),
     `tertiary-authors` = list())) # an empty list for us to loop <author> tags into
-tag_template$`contributors` # sanity check
+# tag_template$`contributors` # sanity check
 author <- structure(list( # an empty list we loop to add an author name into to $contributors$authors or $contributors$`secondary-authors` or $contributors$`tertiary-authors`
     style = structure(list(), # each <style> tag is an empty list (where we route the reference's author name) and three attributes: 1) face, 2) font, and 3) size
                       face = "normal",
                       font = "default",
                       size = "100%")))
-author # sanity check
+# author # sanity check
 
 # 4: <dates>
 tag_template$`dates` <- structure(list( # $dates has two possible sub-tags: 1) year, 2) pub-date
@@ -297,7 +297,7 @@ tag_template$`dates` <- structure(list( # $dates has two possible sub-tags: 1) y
                              face = "normal",
                              font = "default",
                              size = "100%")))))))
-tag_template$`dates` # sanity check
+# tag_template$`dates` # sanity check
 
 # 5: <keywords>
 tag_template$keywords <- list() # $keywords needs to be an empty list to receive <keyword> tags
@@ -306,7 +306,7 @@ tag_template$keywords <- list() # $keywords needs to be an empty list to receive
                       face = "normal",
                       font = "default",
                       size = "100%")))
-keyword
+# keyword
 
 # 6: <research-notes>
 tag_template$`research-notes` <- structure(list( # one empty list that receives research notes
@@ -314,7 +314,7 @@ tag_template$`research-notes` <- structure(list( # one empty list that receives 
                       face = "normal",
                       font = "default",
                       size = "100%")))
-tag_template$`research-notes`
+# tag_template$`research-notes`
 
 # 7: <electronic-resource-num>
 tag_template$`electronic-resource-num` <- structure(list( # one empty list that receives the record's single resource number (Stable URL or DOI)
@@ -322,7 +322,7 @@ tag_template$`electronic-resource-num` <- structure(list( # one empty list that 
                       face = "normal",
                       font = "default",
                       size = "100%")))
-tag_template$`electronic-resource-num`
+# tag_template$`electronic-resource-num`
 
 # 8: <volume>
 tag_template$`volume` <- structure(list( # one empty list that receives the record's single volume (Volume # or Degree)
@@ -330,14 +330,14 @@ tag_template$`volume` <- structure(list( # one empty list that receives the reco
                       face = "normal",
                       font = "default",
                       size = "100%")))
-tag_template$`volume`
+# tag_template$`volume`
 # 9: <number>
 tag_template$`number` <- structure(list( # one empty list that receives the record's 'Issue` or `Document Number` (col AJ)
     style = structure(list(), # each <section> tag has a <style> tag is an empty list (where we route the 'Paper Number` for a record) and three attributes: 1) face, 2) font, and 3) size
                       face = "normal",
                       font = "default",
                       size = "100%")))
-tag_template$`number`
+# tag_template$`number`
 # 10: <pages>
 tag_template$`pages` <- structure(list( # $pages has two possible sub-tags: 1) end, 2) start
     end = structure(list( # <pages><end><style>
@@ -350,59 +350,88 @@ tag_template$`pages` <- structure(list( # $pages has two possible sub-tags: 1) e
                           face = "normal",
                           font = "default",
                           size = "100%")))))
-tag_template$`pages` # sanity check
+# tag_template$`pages` # sanity check
 # 11: <pub-location>
 tag_template$`pub-location` <- structure(list( # one empty list that receives the record's 'Conference location' (col BR) or 'Place Published'
     style = structure(list(), # each <pub-location> tag has a <style> tag is an empty list (where we route the 'Conference location' (col BR) or 'Place Published' for a record) and three attributes: 1) face, 2) font, and 3) size
                       face = "normal",
                       font = "default",
                       size = "100%")))
-tag_template$`pub-location` # sanity check
+# tag_template$`pub-location` # sanity check
+
 # 12: <publisher>
 tag_template$`publisher` <- structure(list( # one empty list that receives the record's 'Publisher', 'University' (col CF), or 'Institution' (col AG)
     style = structure(list(), # each <publisher> tag has a <style> tag is an empty list (where we route the 'Publisher', 'University' (col CF), or 'Institution' (col AG) for a record) and three attributes: 1) face, 2) font, and 3) size
                       face = "normal",
                       font = "default",
                       size = "100%")))
-tag_template$`publisher` # sanity check
+# tag_template$`publisher` # sanity check
+
 # 13: <edition>
 tag_template$`edition` <- structure(list( # one empty list that receives the record's Edition'
     style = structure(list(), # each <publisher> tag has a <style> tag is an empty list (where we route the 'Edition' for a record) and three attributes: 1) face, 2) font, and 3) size
                       face = "normal",
                       font = "default",
                       size = "100%")))
-tag_template$`edition` # sanity check
+# tag_template$`edition` # sanity check
+
 # 14: <num-vols>
 tag_template$`num-vols` <- structure(list( # one empty list that receives the record's 'Session` (col BN)
     style = structure(list(), # each <section> tag has a <style> tag is an empty list (where we route the 'Paper Number` for a record) and three attributes: 1) face, 2) font, and 3) size
                       face = "normal",
                       font = "default",
                       size = "100%")))
-tag_template$`num-vols` # sanity check
+# tag_template$`num-vols` # sanity check
+
 # 15: <section>
 tag_template$`section` <- structure(list( # one empty list that receives the record's 'Paper Number` (column BO) or `Chapter Number` (col DD)
     style = structure(list(), # each <section> tag has a <style> tag is an empty list (where we route the 'Paper Number` for a record) and three attributes: 1) face, 2) font, and 3) size
                       face = "normal",
                       font = "default",
                       size = "100%")))
-tag_template$`section` # sanity check
-tag_template # sanity check
-
-
-
-
-
-
-cat(as.character(xml2::as_xml_document(endnote_example)))
+# tag_template$`section` # sanity check
+# tag_template # sanity check
 
 ### step 3, add template list from step 2 for each record
-n_rows <- seq(1:nrow(test_book)) # a plain-english iterator variable (instead of 'i' and 'j')
-for (row in n_rows) {
-    nextexample[["xml"]][["records"]][[row]] <- df_cols_list # loop to add a template list with element names that match tags in 
+n_rows <- seq(1:nrow(test_book))
+for (row in n_rows) { # a plain-english iterator variable (instead of 'i' and 'j')
+    nextexample[["xml"]][["records"]][[row]] <- tag_template # loop to add a template list of tags
 }
-cat(as.character(xml2::as_xml_document(nextexample))) # print to console
+# cat(as.character(xml2::as_xml_document(nextexample))) # won't print lists with NULL values
 
 ### step 4, route values from df into each <record>
+nextexample2 <- nextexample # making a copy so I don't have to re-run lines to debug
+# 1: <ref-type>
+# <ref-type name = >
+# <ref-type><style>{text}
+# 2: <titles>
+# 3: <contributors>
+n_authors <- str_count(test_book$authors[1], "\r\n") + 1 # calculate how many <author> tags we need 
+for (auth in n_authors) { # a plain-english iterator variable (instead of 'i' and 'j')
+    nextexample$xml$records$record$contributors$authors$author[[auth]] <- author # loop to add a template list of tags
+}
+n_editors <- str_count(test_book$authors[1], "\r\n") + 1 # calculate how many <author> tags we need 
+for (edit in n_editors) { # a plain-english iterator variable (instead of 'i' and 'j')
+    nextexample$xml$records$record$contributors$`secondary-authors`[[edit]] <- author # loop to add a template list of tags
+}
+n_series_editors <- str_count(test_book$authors[1], "\r\n") + 1 # calculate how many <author> tags we need 
+for (edit in n_editors) { # a plain-english iterator variable (instead of 'i' and 'j')
+    nextexample$xml$records$record$contributors$`tertiary-authors`[[edit]] <- author # loop to add a template <author> tag
+}
+# 4: <dates>
+# 5: <keywords>
+# 6: <research-notes>
+# 7: <electronic-resource-num>
+# 8: <volume>
+# 9: <number>
+# 10: <pages>
+# 11: <pub-location>
+# 12: <publisher>
+# 13: <edition>
+# 14: <num-vols>
+# 15: <section>
+
+
 for (row in n_rows) {
     nextexample$xml$records[[row]]$`ref-type`$text <- as.character(ref_lookup[2, 1]) # loop ref_lookup$value into $text for each <record><ref-type>
     # must be as.character() in this loop to change pointer `test_book[row, 1]` into xml2-readable character string...
@@ -410,6 +439,7 @@ for (row in n_rows) {
 # for (row in n_rows) {
 #     nextexample[["xml"]][["records"]][[row]][["author"]]$style$text <- as.character(test_book[row, 2]) # loop test_book$author values into $style$text for each <record>
 # }
+nextexample$xml$records$record$`ref-type`
 cat(as.character(xml2::as_xml_document(nextexample))) # print to console
 # nextexample2 <- xml2::as_xml_document(nextexample)
 
