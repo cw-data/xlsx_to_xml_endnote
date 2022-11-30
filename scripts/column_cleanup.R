@@ -332,12 +332,61 @@ tag_template$`volume` <- structure(list( # one empty list that receives the reco
                       size = "100%")))
 tag_template$`volume`
 # 9: <number>
+tag_template$`number` <- structure(list( # one empty list that receives the record's 'Issue` or `Document Number` (col AJ)
+    style = structure(list(), # each <section> tag has a <style> tag is an empty list (where we route the 'Paper Number` for a record) and three attributes: 1) face, 2) font, and 3) size
+                      face = "normal",
+                      font = "default",
+                      size = "100%")))
+tag_template$`number`
 # 10: <pages>
+tag_template$`pages` <- structure(list( # $pages has two possible sub-tags: 1) end, 2) start
+    end = structure(list( # <pages><end><style>
+        style = structure(list(), # each <style> tag is an empty list (where we route the reference's end page data) and three attributes: 1) face, 2) font, and 3) size
+                          face = "normal",
+                          font = "default",
+                          size = "100%"))),
+    start = structure(list( # <pages><start><style>
+        style = structure(list(), # each <style> tag is an empty list (where we route the reference's start page data) and three attributes: 1) face, 2) font, and 3) size
+                          face = "normal",
+                          font = "default",
+                          size = "100%")))))
+tag_template$`pages` # sanity check
 # 11: <pub-location>
+tag_template$`pub-location` <- structure(list( # one empty list that receives the record's 'Conference location' (col BR) or 'Place Published'
+    style = structure(list(), # each <pub-location> tag has a <style> tag is an empty list (where we route the 'Conference location' (col BR) or 'Place Published' for a record) and three attributes: 1) face, 2) font, and 3) size
+                      face = "normal",
+                      font = "default",
+                      size = "100%")))
+tag_template$`pub-location` # sanity check
 # 12: <publisher>
+tag_template$`publisher` <- structure(list( # one empty list that receives the record's 'Publisher', 'University' (col CF), or 'Institution' (col AG)
+    style = structure(list(), # each <publisher> tag has a <style> tag is an empty list (where we route the 'Publisher', 'University' (col CF), or 'Institution' (col AG) for a record) and three attributes: 1) face, 2) font, and 3) size
+                      face = "normal",
+                      font = "default",
+                      size = "100%")))
+tag_template$`publisher` # sanity check
 # 13: <edition>
+tag_template$`edition` <- structure(list( # one empty list that receives the record's Edition'
+    style = structure(list(), # each <publisher> tag has a <style> tag is an empty list (where we route the 'Edition' for a record) and three attributes: 1) face, 2) font, and 3) size
+                      face = "normal",
+                      font = "default",
+                      size = "100%")))
+tag_template$`edition` # sanity check
 # 14: <num-vols>
+tag_template$`num-vols` <- structure(list( # one empty list that receives the record's 'Session` (col BN)
+    style = structure(list(), # each <section> tag has a <style> tag is an empty list (where we route the 'Paper Number` for a record) and three attributes: 1) face, 2) font, and 3) size
+                      face = "normal",
+                      font = "default",
+                      size = "100%")))
+tag_template$`num-vols` # sanity check
 # 15: <section>
+tag_template$`section` <- structure(list( # one empty list that receives the record's 'Paper Number` (column BO) or `Chapter Number` (col DD)
+    style = structure(list(), # each <section> tag has a <style> tag is an empty list (where we route the 'Paper Number` for a record) and three attributes: 1) face, 2) font, and 3) size
+                      face = "normal",
+                      font = "default",
+                      size = "100%")))
+tag_template$`section` # sanity check
+tag_template # sanity check
 
 
 
