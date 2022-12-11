@@ -89,10 +89,10 @@ xml_add_child(l3[7], "tertiary-title") # "titles"
 xml_add_child(l3[8], "style", 844) # "pages"
 xml_add_child(l3[9], "style", 1) # "volume"
 xml_add_child(l3[10], "year") # "dates"
-xml_add_child(l3[11], "style") # "pub-location"
-xml_add_child(l3[12], "style") # "publisher"
-xml_add_child(l3[14], "style")
-xml_add_child(l3[15], "style")
+xml_add_child(l3[11], "style", "International Institute of Tropical Forestry San Juan, PR Rocky Mountain Research Station Fort Collins, CO") # "pub-location"
+xml_add_child(l3[12], "style", "Forest Service, United States Department of Agriculture") # "publisher"
+xml_add_child(l3[14], "style", "Zotero") # "remote-database-name"
+xml_add_child(l3[15], "style", "en") # "language"
 cat(as.character(xml2::as_xml_document(real))) # sanity check
 l4 <- xml2::xml_children(l3) # define what the level-4 tags are
 
