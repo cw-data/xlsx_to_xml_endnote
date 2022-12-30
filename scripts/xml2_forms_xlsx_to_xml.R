@@ -67,6 +67,11 @@ for(row in 1:nrow(test_book)){ # loop that adds one <record> tag for each row in
 xml2::xml_children(l1)
 cat(as.character(xml2::as_xml_document(real))) # sanity check
 
+# ref-type lookup table
+ref_type_lookup <- readxl::read_excel("data/endnote_ref-type_dictionary.xlsx")
+ref_type_lookup$key <- ref_type_lookup$`Reference type (from Form)`
+ref_type_lookup$value <- stringr::str_extract(ref_type_lookup$XML, "([0-9]+)")
+
 # 4.4. nest level-3 child nodes inside level 2 node
 l2 <- xml2::xml_children(l1) # define what the level-2 tags are
 xml2::xml_children(l2) # look at the l4 tags
