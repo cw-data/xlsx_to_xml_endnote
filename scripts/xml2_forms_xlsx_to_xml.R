@@ -7,10 +7,13 @@
 
 library(xml2)
 library(stringr)
+library(readxl)
 
 ########## Step 1: read in xlsx as dataframe
-book <- read.csv("data/test_book.csv") # run lines 1 through 187 of `scripts/column_cleanup.R` to reproduce this csv
-book$X <- NULL
+# book <- read.csv("data/20221230/20221230_test_book.csv") # run lines 1 through 187 of `scripts/column_cleanup.R` to reproduce this csv
+clean_book <- read.csv("data/test_book.csv") # run lines 1 through 187 of `scripts/column_cleanup.R` to reproduce this csv
+book <- test_book # test_book is the result of running scripts/column_cleanup.R in its entirety
+clean_book$X <- NULL
 
 ########## Step 2: read in example xml
 endnote_example <- xml2::read_xml("data/example_book_section.xml") # read
@@ -57,16 +60,20 @@ cat(as.character(xml2::as_xml_document(real))) # sanity check
 # 4.3. nest a level-2 child node inside level-1 node
 l1 <- xml2::xml_children(real) # define what the level-1 tags are
 xml2::xml_children(l1)
-xml_add_child(l1, "record")
+# xml_add_child(l1, "record")
+for(row in 1:nrow(test_book)){ # loop that adds one <record> tag for each row in the df
+    xml_add_child(l1, "record")
+}
 xml2::xml_children(l1)
+cat(as.character(xml2::as_xml_document(real))) # sanity check
 
 # 4.4. nest level-3 child nodes inside level 2 node
 l2 <- xml2::xml_children(l1) # define what the level-2 tags are
 xml2::xml_children(l2) # look at the l4 tags
-xml_add_child(l2, "database", "Mesophication and PhD.enl") # follows syntax: xml_add_child(location, name, value)
-xml_add_child(l2, "source-app", "EndNote")
-xml_add_child(l2, "rec-number", 442)
-xml_add_child(l2, "foreign-keys")
+# xml_add_child(l2, "database", "Mesophication and PhD.enl") # follows syntax: xml_add_child(location, name, value)
+# xml_add_child(l2, "source-app", "EndNote")
+# xml_add_child(l2, "rec-number", 442)
+# xml_add_child(l2, "foreign-keys")
 xml_add_child(l2, "ref-type", 5)
 xml_add_child(l2, "contributors")
 xml_add_child(l2, "titles")
@@ -84,7 +91,7 @@ cat(as.character(xml2::as_xml_document(real))) # sanity check
 # 4.5. nest level-4 child nodes inside level 3 nodes
 l3 <- xml2::xml_children(l2) # define what the level-3 tags are
 xml2::xml_children(l3) # look at the l4 tags
-xml_add_child(l3[4], "key", 442) # <foreign-keys>
+# xml_add_child(l3[4], "key", 442) # <foreign-keys>
 xml_add_child(l3[6], "authors") # <contributors>
 xml_add_child(l3[6], "secondary-authors")  # <contributors>
 xml_add_child(l3[7], "title") # <titles>
