@@ -9,8 +9,8 @@ library(data.table)
 library(tibble)
 
 ########## Step 1: read in xlsx as dataframe
-# book <- readxl::read_excel("data/example_book_section.xlsx")
-book <- readxl::read_excel("data/R8 OG Reference Entry(1-3).xlsx")
+book <- readxl::read_excel("data/example_book_section.xlsx")
+# book <- readxl::read_excel("data/R8 OG Reference Entry(1-3).xlsx")
 book <-
     book %>% # remove columns from 'book' that we know won't have an xml tag
     select(-c('ID', 'Start time', 'Completion time', 'Email', 'Name')) # confirm that we don't want to Forms metadata in EndNote
@@ -74,7 +74,7 @@ lookup$xml_tag <- ifelse(
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("where did the", lookup$xlsx_colname, ignore.case = TRUE) == TRUE | # if $xlsx_colnames[row] contains this word
         grepl("cover and/or", lookup$xlsx_colname, ignore.case = TRUE) == TRUE ,# or this word :
-    'keyword', # assign this value
+    'location', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 # <research-notes>
@@ -228,4 +228,6 @@ test_book <- book
 # data.table::setDT(test_book)
 data.table::setnames(test_book, old = lookup$xlsx_colname, new = lookup$xml_tag, skip_absent = TRUE) # use the lookup table to set column names
 # I think method 2 will require far less code which will make it easier to understand and maintain
-data.table::fwrite(test_book, "data/20221230/20221230_test_book.csv")
+# data.table::fwrite(test_book, "data/20221230/20221230_test_book.csv")
+
+# test <- read.csv("data/20221230/20221230_test_book.csv")
