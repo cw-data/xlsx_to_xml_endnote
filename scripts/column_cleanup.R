@@ -212,7 +212,7 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
 # Cover type
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("cover type", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
-    'custom1', # assign this value
+    'cover-type', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 ######################## find what we still need to fill in on 'map of xlsx -> xml fields' table in '20221022_endnote_dev.docx'
@@ -228,4 +228,4 @@ test_book <- book
 # data.table::setDT(test_book)
 data.table::setnames(test_book, old = lookup$xlsx_colname, new = lookup$xml_tag, skip_absent = TRUE) # use the lookup table to set column names
 # I think method 2 will require far less code which will make it easier to understand and maintain
-
+data.table::fwrite(test_book, "data/20221230/20221230_test_book.csv")
