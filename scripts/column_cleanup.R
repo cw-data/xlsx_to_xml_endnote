@@ -9,7 +9,8 @@ library(data.table)
 library(tibble)
 
 ########## Step 1: read in xlsx as dataframe
-book <- readxl::read_excel("data/example_book_section.xlsx")
+# book <- readxl::read_excel("data/example_book_section.xlsx")
+book <- readxl::read_excel("data/R8 OG Reference Entry(1-3).xlsx")
 book <-
     book %>% # remove columns from 'book' that we know won't have an xml tag
     select(-c('ID', 'Start time', 'Completion time', 'Email', 'Name')) # confirm that we don't want to Forms metadata in EndNote
@@ -208,6 +209,12 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
     'authors', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
+# Cover type
+lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
+    grepl("cover type", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
+    'custom1', # assign this value
+    lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
+)
 ######################## find what we still need to fill in on 'map of xlsx -> xml fields' table in '20221022_endnote_dev.docx'
 missing_values <- lookup %>%
     filter(is.na(xml_tag)) %>%
@@ -218,11 +225,7 @@ missing_values <- lookup %>%
 ########################  Use a lookup table to change colnames
 # a small example to wrap my head around:
 test_book <- book
-data.table::setDT(test_book)
-lookup2 <- lookup %>% # using the lookup table means you only have to maintain the rename logic in one place: the lookup table
-    dplyr::filter(!is.na(xml_tag)) # filtering out NAs until we completely fill in the lookup table
-test_book <- test_book %>%
-    dplyr::select_if(~ !any(is.na(.))) # select only the columns with non-NA values
-data.table::setnames(test_book, old = lookup2$xlsx_colname, new = lookup2$xml_tag, skip_absent = TRUE) # use the lookup table to set column names
+# data.table::setDT(test_book)
+data.table::setnames(test_book, old = lookup$xlsx_colname, new = lookup$xml_tag, skip_absent = TRUE) # use the lookup table to set column names
 # I think method 2 will require far less code which will make it easier to understand and maintain
 
