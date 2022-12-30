@@ -10,9 +10,9 @@ library(tibble)
 
 ########## Step 1: read in xlsx as dataframe
 book <- readxl::read_excel("data/example_book_section.xlsx")
-# book <- 
-#     book %>% # remove columns from 'book' that we know won't have an xml tag
-#     select(-c('ID', 'Start time', 'Completion time', 'Email', 'Name')) # confirm that we don't want to Forms metadata in EndNote
+book <-
+    book %>% # remove columns from 'book' that we know won't have an xml tag
+    select(-c('ID', 'Start time', 'Completion time', 'Email', 'Name')) # confirm that we don't want to Forms metadata in EndNote
 ##########  Step 2: make a lookup table. A dataframe that has each xlsx column name and its equivalent xml tag.
 xlsx_colname <- colnames(book) # capture the xlsx column names in an array
 lookup <- data.frame( # make a dataframe named 'lookup'
@@ -102,7 +102,6 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 # <pages>
-# tbd, a placeholder so I don't forget to update this
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("Page Range", lookup$xlsx_colname, ignore.case = TRUE) == TRUE,  # if $xlsx_colnames[row] contains this word
     'pages', # assign this value
@@ -170,6 +169,43 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("editor", lookup$xlsx_colname, ignore.case = TRUE) == TRUE,  # if $xlsx_colnames[row] contains this word
     'secondary-authors', # assign this value
+    lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
+)
+# <image-urls>
+# <author>
+lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
+    grepl("photographer", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
+    'authors', # assign this value
+    lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
+)
+# Photograph caption
+lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
+    grepl("caption", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
+    'caption', # assign this value
+    lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
+)
+# Map description
+lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
+    grepl("map description", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
+    'caption', # assign this value
+    lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
+)
+# Is this photograph in the public domain?
+lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
+    grepl("public domain", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
+    'ppv-rev', # assign this value
+    lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
+)
+# Cartographer(s)
+lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
+    grepl("Cartographer", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
+    'authors', # assign this value
+    lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
+)
+# Advisor
+lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
+    grepl("advisor", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
+    'authors', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 ######################## find what we still need to fill in on 'map of xlsx -> xml fields' table in '20221022_endnote_dev.docx'
