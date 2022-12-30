@@ -172,87 +172,7 @@ xml2::xml_children(l3) # sanity check
 as.character(xml2::xml_children(l3)) == as.character(xml2::xml_children(xml_children(xml_children(xml_children(endnote_example)))))# sanity check
 
 # 4.10 Add attributes to all <style> tags
-# For this minimum viable product, I'm manually updating these tags. This will become loops.
-xml2::xml_children(l3) # these are the level-3 tags
-style_tag <- xml2::xml_children(l3)[[7]] # this is a level-3 <style> tag
-xml2::xml_attr(style_tag, "face") <- "normal" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "font") <- "default" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "size") <- "100%" # use xml_attr() to create attribute and assign it a value
-
-style_tag <- xml2::xml_children(l3)[[8]] # <style>
-xml2::xml_attr(style_tag, "face") <- "normal" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "font") <- "default" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "size") <- "100%" # use xml_attr() to create attribute and assign it a value
-
-style_tag <- xml2::xml_children(l3)[[11]] # <style>
-xml2::xml_attr(style_tag, "face") <- "normal" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "font") <- "default" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "size") <- "100%" # use xml_attr() to create attribute and assign it a value
-
-style_tag <- xml2::xml_children(l3)[[12]] # <style>
-xml2::xml_attr(style_tag, "face") <- "normal" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "font") <- "default" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "size") <- "100%" # use xml_attr() to create attribute and assign it a value
-
-style_tag <- xml2::xml_children(l3)[[13]] # <style>
-xml2::xml_attr(style_tag, "face") <- "normal" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "font") <- "default" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "size") <- "100%" # use xml_attr() to create attribute and assign it a value
-
-style_tag <- xml2::xml_children(l3)[[14]] # <style>
-xml2::xml_attr(style_tag, "face") <- "normal" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "font") <- "default" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "size") <- "100%" # use xml_attr() to create attribute and assign it a value
-
-xml2::xml_children(l3) # sanity check
-xml2::xml_children(xml_children(xml_children(xml_children(endnote_example)))) # example's l3 tags
-as.character(xml2::xml_children(l3)) == as.character(xml2::xml_children(xml_children(xml_children(xml_children(endnote_example))))) # sanity check
-
-xml2::xml_children(l4) # these are the level-4 tags
-style_tag <- xml2::xml_children(l4)[[4]] # these are the level-3 <style> tags
-xml2::xml_attr(style_tag, "face") <- "italic" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "font") <- "default" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "size") <- "100%" # use xml_attr() to create attribute and assign it a value
-
-style_tag <- xml2::xml_children(l4)[[5]] # <style>
-xml2::xml_attr(style_tag, "face") <- "normal" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "font") <- "default" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "size") <- "100%" # use xml_attr() to create attribute and assign it a value
-
-style_tag <- xml2::xml_children(l4)[[6]] # <style>
-xml2::xml_attr(style_tag, "face") <- "normal" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "font") <- "default" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "size") <- "100%" # use xml_attr() to create attribute and assign it a value
-
-style_tag <- xml2::xml_children(l4)[[7]] # <style>
-xml2::xml_attr(style_tag, "face") <- "normal" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "font") <- "default" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "size") <- "100%" # use xml_attr() to create attribute and assign it a value
-
-xml2::xml_children(l4) # sanity check
-xml2::xml_children(xml_children(xml_children(xml_children(xml_children(endnote_example))))) # example's l4 tags
-as.character(xml2::xml_children(l4)) == as.character(xml2::xml_children(xml_children(xml_children(xml_children(xml_children(endnote_example)))))) # sanity check
-
-xml2::xml_children(l5) # these are the level-5 tags
-style_tag <- xml2::xml_children(l5)[[1]] # these are the level-3 <style> tags
-xml2::xml_attr(style_tag, "face") <- "normal" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "font") <- "default" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "size") <- "100%" # use xml_attr() to create attribute and assign it a value
-
-style_tag <- xml2::xml_children(l5)[[2]] # <style>
-xml2::xml_attr(style_tag, "face") <- "normal" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "font") <- "default" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "size") <- "100%" # use xml_attr() to create attribute and assign it a value
-
-style_tag <- xml2::xml_children(l5)[[3]] # <style>
-xml2::xml_attr(style_tag, "face") <- "normal" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "font") <- "default" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "size") <- "100%" # use xml_attr() to create attribute and assign it a value
-
-style_tag <- xml2::xml_children(l5)[[4]] # <style>
-xml2::xml_attr(style_tag, "face") <- "normal" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "font") <- "default" # use xml_attr() to create attribute and assign it a value
-xml2::xml_attr(style_tag, "size") <- "100%" # use xml_attr() to create attribute and assign it a value
+# ignore <style> attributes for now; RSXML.dtd says <style> attributes have defaults, so we may not have to provide <style> attributes at all
 
 xml2::xml_children(l5) #l5 tags
 xml2::xml_children(xml_children(xml_children(xml_children(xml_children(xml_children(endnote_example)))))) # example's l5 tags
@@ -267,7 +187,8 @@ as.character(xml2::as_xml_document(real)) == as.character(xml2::as_xml_document(
 ########## Step 5: write output to xml
 # write_xml(real, paste0("data/",format(Sys.time(), "%Y%m%d"), "_book_output.xml"), options = "format")
 real <- stringr::str_remove_all(real, "(\n +|\n)")
-# write(real, "data/20221228/20221228_testoutput.xml")
+as.character(real)
+# data.table::fwrite(real, "data/20221228/20221228_testoutput.xml")
 
 
 ######### END OF WORKING CODE, BELOW IS FOR DEVELOPMENT
