@@ -6,6 +6,7 @@
 # because I can't consistently cat() the list to console, so I can't debug, which makes development impossible
 
 library(xml2)
+library(stringr)
 
 ########## Step 1: read in xlsx as dataframe
 book <- read.csv("data/test_book.csv") # run lines 1 through 187 of `scripts/column_cleanup.R` to reproduce this csv
@@ -252,10 +253,10 @@ cat(as.character(xml2::as_xml_document(endnote_example))) # sanity check
 as.character(xml2::as_xml_document(real)) == as.character(xml2::as_xml_document(endnote_example)) # TRUE means our xml output is identical to EndNote's
 
 ########## Step 5: write output to xml
-write_xml(real, paste0("data/",format(Sys.time(), "%Y%m%d"), "_book_output.xml"), options = "format")
-# test to confirm that writing to xml didn't screw anything up:
-our_output <- xml2::read_xml("data/20221211_book_output.xml") # read
-as.character(our_output) == as.character(endnote_example) # test
+# write_xml(real, paste0("data/",format(Sys.time(), "%Y%m%d"), "_book_output.xml"), options = "format")
+real <- stringr::str_remove_all(real, "(\n +|\n)")
+# write(real, "data/20221228/20221228_testoutput.xml")
+
 
 ######### END OF WORKING CODE, BELOW IS FOR DEVELOPMENT
 # loop over indices
