@@ -15,7 +15,7 @@ book <-
     book %>% # remove columns from 'book' that we know won't have an xml tag
     select(-c('ID', 'Start time', 'Completion time', 'Email', 'Name')) # confirm that we don't want to Forms metadata in EndNote
 ##########  Step 2: make a lookup table. A dataframe that has each xlsx column name and its equivalent xml tag.
-xlsx_colname <- colnames(book) # capture the xlsx column names in an array
+xlsx_colname <- colnames(data) # capture the xlsx column names in an array
 lookup <- data.frame( # make a dataframe named 'lookup'
     xlsx_colname = xlsx_colname, # add a column named $xlsx_colnames to 'lookup' and assign it values 'xlsx_colnames'
     xml_tag = NA # add empty column named xml_tags so we can fill correct values in next steps
@@ -220,32 +220,6 @@ missing_values <- lookup %>%
     filter(is.na(xml_tag)) %>%
     arrange(xlsx_colname)
 
+########################  write lookup table to file
+data.table::fwrite(lookup, "resources/colname_tagname_dictionary.csv")
 
-
-########################  Use a lookup table to change colnames
-# a small example to wrap my head around:
-test_book <- book
-# data.table::setDT(test_book)
-
-testdf <- data.frame(`Ref1` = c("book", "journal"), # a reprex dataframe
-                     `Title1` = c("first title", "second title"))
-record_list <- vector(mode = "list", length = nrow(testdf)) # empty list to receive pieces of reprex dataframe `testdf`
-for(row in 1:nrow(testdf)){# break the dataframe `testdf` into nrow(testdf) dataframes
-    record_list[[row]] <- testdf[row,] # where each row from `testdf` becomes its own dataframe stored as an element in `record_list`
-}
-test_lookup <- data.frame(key = colnames(testdf), # mock up a lookup table
-                          value = c("ref_changed", "title_changed"))
-for(elm in 1:length(record_list)){ # loop through each element in `record_list`
-    data.table::setnames(record_list[[elm]], #  reset column names for each `record_list` element
-                         old = test_lookup$key, # based on the key-value pairs established in `test_lookup`
-                         new = test_lookup$value, skip_absent = TRUE) # based on key
-}
-
-
-# test_book3 <- test_book %>%
-#     dplyr::select_if(~ !any(is.na(.))) # select only the columns with non-NA values
-data.table::setnames(test_book, old = lookup$xlsx_colname, new = lookup$xml_tag, skip_absent = TRUE) # use the lookup table to set column names
-# I think method 2 will require far less code which will make it easier to understand and maintain
-# data.table::fwrite(test_book, "data/20221230/20221230_test_book.csv")
-
-# test <- read.csv("data/20221230/20221230_test_book.csv")
