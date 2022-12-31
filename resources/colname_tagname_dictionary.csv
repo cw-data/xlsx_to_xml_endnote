@@ -1,0 +1,153 @@
+xlsx_colname,xml_tag
+Reference Type,ref-type
+Title,title
+Author(s),authors
+Year,date
+"Attach files (i.e., pdf, photograph)",pdf-urls
+Where did the research take place/what is the location of the reference?,location
+Reference description,research-notes
+Cover and/or forest type,location
+Stable URL or DOI,electronic-resource-num
+Title2,title
+Photographer(s),authors
+Year2,date
+Is this photograph in the public domain?,ppv-rev
+"Attach files (i.e., pdf, photograph)2",pdf-urls
+Where did the research take place/what is the location of the reference?2,location
+Photograph caption,caption
+Cover and/or forest type2,location
+Stable URL or DOI2,electronic-resource-num
+Title3,title
+Cartographer(s),authors
+Year3,date
+"Date, if month or day is known.",date
+"Attach files (i.e., pdf, photograph)3",pdf-urls
+Where did the research take place/what is the location of the reference?3,location
+Map description,caption
+Cover and/or forest type3,location
+Stable URL or DOI3,electronic-resource-num
+Title4,title
+Author(s)2,authors
+Year4,date
+Journal (name of periodical),secondary-title
+Volume,volume
+Issue,number
+Page Range,pages
+"Attach files (i.e., pdf, photograph)4",pdf-urls
+Where did the research take place/what is the location of the reference?4,location
+Reference description2,research-notes
+Cover and/or forest type4,location
+Stable URL or DOI4,electronic-resource-num
+Title5,title
+Author(s)3,authors
+Year5,date
+Series Editor,secondary-authors
+Series Title,tertiary-title
+Place Published,pub-location
+Institution,publisher
+Volume2,volume
+Series Volume,volume
+Document Number,number
+Number of Pages,pages
+Publisher,publisher
+Edition,edition
+"Attach files (i.e., pdf, photograph)5",pdf-urls
+Reference description3,research-notes
+Where did the research take place/what is the location of the reference?5,location
+Cover and/or forest type5,location
+Stable URL or DOI5,electronic-resource-num
+Title6,title
+Author(s)4,authors
+Year6,date
+"Attach files (i.e., pdf, photograph)6",pdf-urls
+Where did the research take place/what is the location of the reference?6,location
+Reference description4,research-notes
+Cover and/or forest type6,location
+Stable URL or DOI6,electronic-resource-num
+Number of Volumes,volume
+Series editor2,secondary-authors
+Series title2,tertiary-title
+Edition2,edition
+Title7,title
+Author(s)5,authors
+Year7,date
+"Attach files (i.e., pdf, photograph)7",pdf-urls
+Where did the research take place/what is the location of the reference?7,location
+Reference description5,research-notes
+Cover and/or forest type7,location
+Stable URL or DOI7,electronic-resource-num
+Session,num-vols
+Paper Number,section
+Editor,secondary-authors
+Conference name,secondary-title
+Conference location,pub-location
+Publisher2,publisher
+Volume3,volume
+Issue2,number
+Page Range2,pages
+Title8,title
+Author(s)6,authors
+Year8,date
+"Attach files (i.e., pdf, photograph)8",pdf-urls
+Where did the research take place/what is the location of the reference?8,location
+Reference description6,research-notes
+Cover and/or forest type8,location
+Stable URL or DOI8,electronic-resource-num
+Academic Department,secondary-title
+University,publisher
+Degree,volume
+Place Published2,pub-location
+Number of pages2,pages
+Title9,title
+Author(s)7,authors
+Year9,date
+Edition3,edition
+Editor2,secondary-authors
+Number of Volumes2,volume
+Series Volume2,volume
+Place Published3,pub-location
+Publisher3,publisher
+Volume4,volume
+Series Editor3,secondary-authors
+Series Title3,tertiary-title
+"Attach files (i.e., pdf, photograph)9",pdf-urls
+Where did the research take place/what is the location of the reference?9,location
+Reference description7,research-notes
+Cover and/or forest type9,location
+Stable URL or DOI9,electronic-resource-num
+Number of Pages3,pages
+Title10,title
+Book Title,secondary-title
+Author(s)8,authors
+Year10,date
+Edition4,edition
+Editor3,secondary-authors
+Number of Volumes3,volume
+Series Volume3,volume
+Place Published4,pub-location
+Publisher4,publisher
+Volume5,volume
+Series Editor4,secondary-authors
+Series Title4,tertiary-title
+Page Range3,pages
+Chapter Number,section
+"Attach files (i.e., pdf, photograph)10",pdf-urls
+Where did the research take place/what is the location of the reference?10,location
+Reference description8,research-notes
+Cover and/or forest type10,location
+Stable URL or DOI10,electronic-resource-num
+Title11,title
+Author(s)/Reporter(s),authors
+Year11,date
+Newspaper,secondary-title
+"Attach files (i.e., pdf, photograph)11",pdf-urls
+Where did the research take place/what is the location of the reference?11,location
+Reference description9,research-notes
+Cover and/or forest type11,location
+Stable URL or DOI11,electronic-resource-num
+Place published5,pub-location
+Publisher5,publisher
+Page Range4,pages
+Volume6,volume
+Edition5,edition
+Section,section
