@@ -1,5 +1,6 @@
 library(readxl)
 library(dplyr)
+library(data.table)
 
 data <- readxl::read_excel("data/20221116_excel_example.xlsx")
 
@@ -15,7 +16,7 @@ names(record_list) <- unique(ref_type_lookup$`Reference type (from Form)`) # nam
 for(i in 1:length(record_list)){
     record_list[[i]] <- data %>% 
         subset(`Reference Type` == ref_type_lookup$`Reference type (from Form)`[i]) %>%
-        select(ref_type_lookup$start_col_no[i]:ref_type_lookup$end_col_no[i])
+        dplyr::select(ref_type_lookup$start_col_no[i]:ref_type_lookup$end_col_no[i])
 }
 
 lookup <- data.table::fread("resources/colname_tagname_dictionary.csv")
@@ -25,3 +26,5 @@ for(elm in 1:length(record_list)){ # loop through each element in `record_list`
                          old = lookup$xlsx_colname, # based on the key-value pairs established in `test_lookup`
                          new = lookup$xml_tag, skip_absent = TRUE) # based on key
 }
+
+
