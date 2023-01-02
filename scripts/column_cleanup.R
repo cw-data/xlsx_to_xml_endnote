@@ -119,12 +119,6 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
     'pages', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
-# <tertiary-authors>
-lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
-    grepl("series editor", lookup$xlsx_colname, ignore.case = TRUE) == TRUE,  # if $xlsx_colnames[row] contains this word
-    'series editor', # assign this value
-    lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
-)
 # <pub-location>
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("place published", lookup$xlsx_colname, ignore.case = TRUE) == TRUE | # if $xlsx_colnames[row] contains this word OR
@@ -185,7 +179,12 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
     'editor', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
-# <image-urls>
+# <tertiary-authors>
+lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
+    grepl("series editor", lookup$xlsx_colname, ignore.case = TRUE) == TRUE,  # if $xlsx_colnames[row] contains this word
+    'series-editor', # assign this value
+    lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
+)
 # <author>
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("photographer", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
