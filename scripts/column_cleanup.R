@@ -76,11 +76,16 @@ lookup$xml_tag <- ifelse(
     'pdf-urls', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
-# <keyword>
+# <location>
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
-    grepl("where did the", lookup$xlsx_colname, ignore.case = TRUE) == TRUE | # if $xlsx_colnames[row] contains this word
-        grepl("cover and/or", lookup$xlsx_colname, ignore.case = TRUE) == TRUE ,# or this word :
+    grepl("where did the", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word:
     'location', # assign this value
+    lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
+)
+# <cover-type> # a custom field
+lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
+    grepl("cover and/or", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word:
+    'cover-type', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 # <research-notes>
