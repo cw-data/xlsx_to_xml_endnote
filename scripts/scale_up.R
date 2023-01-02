@@ -106,7 +106,6 @@ for(i in 1:nrow(data2)){
 }
 cat(as.character(xml2::as_xml_document(real))) # sanity check
 #----- <title>
-# xml_add_child(l2, "titles")
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$title[i]) == FALSE){
         xml_add_child(l2[i], "titles")
@@ -118,12 +117,24 @@ for(i in 1:nrow(data2)){
     }
 }
 cat(as.character(xml2::as_xml_document(real))) # sanity check
-
-
-
-
-
-
+#----- <location>
+cat(as.character(xml2::as_xml_document(real))) # sanity check
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$location[i]) == FALSE){
+        xml_add_child(l2[i], "location", record_list2$Book[[i]]$location)
+        l3 <- xml2::xml_children(l2)
+    }
+}
+cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <cover-type>
+cat(as.character(xml2::as_xml_document(real))) # sanity check
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$`cover-type`[i]) == FALSE){
+        xml_add_child(l2[i], "cover-type", record_list2$Book[[i]]$`cover-type`)
+        l3 <- xml2::xml_children(l2)
+    }
+}
+cat(as.character(xml2::as_xml_document(real))) # sanity check
 
 
 
