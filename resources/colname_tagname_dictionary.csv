@@ -41,7 +41,7 @@ Stable URL or DOI4,web-urls
 Title5,title
 Author(s)3,author
 Year5,year
-Series Editor,editor
+Series Editor,series-editor
 Series Title,tertiary-title
 Place Published,pub-location
 Institution,publisher
@@ -65,7 +65,7 @@ Reference description4,research-notes
 Cover and/or forest type6,cover-type
 Stable URL or DOI6,web-urls
 Number of Volumes,num-vols
-Series editor2,editor
+Series editor2,series-editor
 Series title2,tertiary-title
 Edition2,edition
 Title7,title
@@ -108,7 +108,7 @@ Series Volume2,secondary-volume
 Place Published3,pub-location
 Publisher3,publisher
 Volume4,volume
-Series Editor3,editor
+Series Editor3,series-editor
 Series Title3,tertiary-title
 "Attach files (i.e., pdf, photograph)9",pdf-urls
 Where did the research take place/what is the location of the reference?9,location
@@ -127,7 +127,7 @@ Series Volume3,secondary-volume
 Place Published4,pub-location
 Publisher4,publisher
 Volume5,volume
-Series Editor4,editor
+Series Editor4,series-editor
 Series Title4,tertiary-title
 Page Range3,pages
 Chapter Number,section
