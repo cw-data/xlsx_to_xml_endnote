@@ -59,37 +59,36 @@ data2 <- data %>% subset(`Reference Type` == "Book")
 # 4.1. instantiate new xml document and add root node
 #----- <xml>
 real <- xml2::xml_new_root("xml") # instantiate root node
-cat(as.character(xml2::as_xml_document(real))) # sanity check
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 # 4.2. nest a level-1 child-node inside root (level-zero) node
 #----- <records>
 xml_add_child(real, # the node into which you want to nest a child node
               "records") # the name of the node you're adding
-cat(as.character(xml2::as_xml_document(real))) # sanity check
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 # 4.3. nest a level-2 child node inside level-1 node
 l1 <- xml2::xml_children(real) # define what the level-1 tags are
-xml2::xml_children(l1)
+# xml2::xml_children(l1)
 #----- <record>
 for(row in 1:nrow(data2)){ # loop that adds one <record> tag for each row in the df
     xml_add_child(l1, "record")
 }
-xml2::xml_children(l1)
-cat(as.character(xml2::as_xml_document(real))) # sanity check
+# xml2::xml_children(l1)
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 # 4.4. nest level-3 child nodes inside level 2 node
 l2 <- xml2::xml_children(l1) # define what the level-2 tags are
-xml2::xml_children(l2) # look at the l4 tags
 #-----  <ref-type>
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$`ref-type`[i]) == FALSE){
         xml_add_child(l2, "ref-type", data2$`value`[i])    
     }
     }
-xml2::xml_children(l2)
-cat(as.character(xml2::as_xml_document(real))) # sanity check
+# xml2::xml_children(l2)
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 l3 <- xml2::xml_children(l2)
 for(i in 1:nrow(data2)){
     xml_set_attr(l3, "name", data2$`Reference Type`[i])
 }
-cat(as.character(xml2::as_xml_document(real))) # sanity check
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 #----- <author>
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$author[i]) == FALSE){
@@ -104,7 +103,7 @@ for(i in 1:nrow(data2)){
         xml_add_child(l5[length(l5)], "style", record_list2$Book[[i]]$author)
     }
 }
-cat(as.character(xml2::as_xml_document(real))) # sanity check
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 #----- <title>
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$title[i]) == FALSE){
@@ -116,9 +115,9 @@ for(i in 1:nrow(data2)){
         l5 <- xml2::xml_children(l4)
     }
 }
-cat(as.character(xml2::as_xml_document(real))) # sanity check
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 #----- <location>
-cat(as.character(xml2::as_xml_document(real))) # sanity check
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$location[i]) == FALSE){
         xml_add_child(l2[i], "location")
@@ -126,9 +125,9 @@ for(i in 1:nrow(data2)){
         xml_add_child(l3[length(l3)], "style", record_list2$Book[[i]]$location)
     }
 }
-cat(as.character(xml2::as_xml_document(real))) # sanity check
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 #----- <cover-type>
-cat(as.character(xml2::as_xml_document(real))) # sanity check
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$`cover-type`[i]) == FALSE){
         xml_add_child(l2[i], "cover-type")
@@ -136,9 +135,9 @@ for(i in 1:nrow(data2)){
         xml_add_child(l3[length(l3)], "style", record_list2$Book[[i]]$`cover-type`)
     }
 }
-cat(as.character(xml2::as_xml_document(real))) # sanity check
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 #----- <year>
-cat(as.character(xml2::as_xml_document(real))) # sanity check
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$`year`[i]) == FALSE){
         xml_add_child(l2[i], "dates")
@@ -148,7 +147,45 @@ for(i in 1:nrow(data2)){
         xml_add_child(l4[length(l4)], "style", record_list2$Book[[1]]$`year`[i])
     }
 }
-cat(as.character(xml2::as_xml_document(real))) # sanity check
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <pub-location>
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$`pub-location`[i]) == FALSE){
+        xml_add_child(l2[i], "pub-location")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "style", record_list2$Book[[1]]$`pub-location`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
+        l4 <- xml2::xml_children(l3)
+    }
+}
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <publisher>
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$`publisher`[i]) == FALSE){
+        xml_add_child(l2[i], "publisher")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "style", record_list2$Book[[1]]$`publisher`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
+        l4 <- xml2::xml_children(l3)
+    }
+}
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <web-urls>
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$`web-urls`[i]) == FALSE){
+        xml_add_child(l2[i], "urls")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "web-urls") # pointing the index to length() adds sub-tags inside the most recently added tag of that level
+        l4 <- xml2::xml_children(l3)
+        xml_add_child(l4[length(l4)], "url")
+        l5 <- xml2::xml_children(l4)
+        xml_add_child(l5[length(l5)], "style", record_list2$Book[[1]]$`web-urls`[i])
+        l6 <- xml2::xml_children(l5)
+    }
+}
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+
 #----- <pages>
 cat(as.character(xml2::as_xml_document(real))) # sanity check
 # xml_add_child(l2, "pages")
