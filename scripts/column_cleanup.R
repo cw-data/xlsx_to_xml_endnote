@@ -94,10 +94,10 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
     'research-notes', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
-# <electronic-resource-num>
+# <web-urls>
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("Stable URL", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
-    'electronic-resource-num', # assign this value
+    'web-urls', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 # <volume>
