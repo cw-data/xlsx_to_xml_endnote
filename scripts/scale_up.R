@@ -104,6 +104,21 @@ for(i in 1:nrow(data2)){
     }
 }
 # cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <editor>
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$editor[i]) == FALSE){
+        xml_add_child(l2[i], "contributors")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "tertiary-authors")
+        l4 <- xml2::xml_children(l3)
+        xml_add_child(l4[length(l4)], "author")
+        l5 <- xml2::xml_children(l4)
+        xml_set_attr(l5[length(l5)], "role", "editor")
+        l6 <- xml2::xml_children(l5)
+        xml_add_child(l5[length(l5)], "style", record_list2$Book[[i]]$editor)
+    }
+}
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 #----- <title>
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$title[i]) == FALSE){
@@ -185,7 +200,6 @@ for(i in 1:nrow(data2)){
     }
 }
 # cat(as.character(xml2::as_xml_document(real))) # sanity check
-
 #----- <research-notes>
 # cat(as.character(xml2::as_xml_document(real))) # sanity check
 for(i in 1:nrow(data2)){
@@ -198,14 +212,27 @@ for(i in 1:nrow(data2)){
 }
 # cat(as.character(xml2::as_xml_document(real))) # sanity check
 #----- <pages>
-cat(as.character(xml2::as_xml_document(real))) # sanity check
-# xml_add_child(l2, "pages")
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$`pages`[i]) == FALSE){
-        xml_add_child(l2[i], "cover-type", record_list2$Book[[i]]$`cover-type`)
+        xml_add_child(l2[i], "pages")
         l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "style", record_list2$Book[[1]]$`pages`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
+        l4 <- xml2::xml_children(l3)
     }
 }
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <edition>
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$`edition`[i]) == FALSE){
+        xml_add_child(l2[i], "edition")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "style", record_list2$Book[[1]]$`edition`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
+        l4 <- xml2::xml_children(l3)
+    }
+}
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 
 
 
