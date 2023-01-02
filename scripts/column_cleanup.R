@@ -47,9 +47,14 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
 )
 # <date>
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
-    grepl("year", lookup$xlsx_colname, ignore.case = TRUE) == TRUE |
-        grepl("date", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word AND
+    grepl("date", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word AND
     'date', # assign this value
+    lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
+)
+# <year>
+lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
+    grepl("year", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word AND
+    'year', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 # <title>
@@ -95,6 +100,12 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
     grepl("volume", lookup$xlsx_colname, ignore.case = TRUE) == TRUE |  # if $xlsx_colnames[row] contains this word OR
         grepl("degree", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # this word:
     'volume', # assign this value
+    lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
+)
+# <secondary-volume>
+lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
+    grepl("series volume", lookup$xlsx_colname, ignore.case = TRUE) == TRUE,  # if $xlsx_colnames[row] contains this word
+    'secondary-volume', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 # <pages>
