@@ -1,3 +1,4 @@
+rm(list=ls())
 library(readxl)
 library(dplyr)
 library(data.table)
@@ -107,9 +108,9 @@ for(i in 1:nrow(data2)){
 #----- <editor>
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$editor[i]) == FALSE){
-        xml_add_child(l2[i], "contributors")
+        # xml_add_child(l2[1], "contributors")
         l3 <- xml2::xml_children(l2)
-        xml_add_child(l3[length(l3)], "tertiary-authors")
+        xml_add_child(l3[2], "secondary-authors") # need to check this index on real data
         l4 <- xml2::xml_children(l3)
         xml_add_child(l4[length(l4)], "author")
         l5 <- xml2::xml_children(l4)
@@ -233,14 +234,86 @@ for(i in 1:nrow(data2)){
     }
 }
 # cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <volume>
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$`volume`[i]) == FALSE){
+        xml_add_child(l2[i], "volume")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "style", record_list2$Book[[1]]$`volume`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
+        l4 <- xml2::xml_children(l3)
+    }
+}
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <num-vols>
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$`num-vols`[i]) == FALSE){
+        xml_add_child(l2[i], "num-vols")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "style", record_list2$Book[[1]]$`num-vols`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
+        l4 <- xml2::xml_children(l3)
+    }
+}
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <secondary-volume>
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$`secondary-volume`[i]) == FALSE){
+        xml_add_child(l2[i], "secondary-volume")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "style", record_list2$Book[[1]]$`secondary-volume`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
+        l4 <- xml2::xml_children(l3)
+    }
+}
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <tertiary-title>
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$`tertiary-title`[i]) == FALSE){
+        # xml_add_child(l2[i], "titles")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[3], "tertiary-title")
+        l4 <- xml2::xml_children(l3)
+        xml_add_child(l4[length(l4)], "style", record_list2$Book[[i]]$`tertiary-title`)
+        l5 <- xml2::xml_children(l4)
+    }
+}
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <series-editor>
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$`series-editor`[i]) == FALSE){
+        # xml_add_child(l2[1], "contributors")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[2], "tertiary-authors") # need to check this index on real data
+        l4 <- xml2::xml_children(l3)
+        xml_add_child(l4[length(l4)], "author")
+        l5 <- xml2::xml_children(l4)
+        xml_set_attr(l5[length(l5)], "role", "series-editor")
+        l6 <- xml2::xml_children(l5)
+        xml_add_child(l5[length(l5)], "style", record_list2$Book[[i]]$`series-editor`)
+    }
+}
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <pdf-urls>
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$`pdf-urls`[i]) == FALSE){
+        xml_add_child(l2[i], "urls")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "pdf-urls") # pointing the index to length() adds sub-tags inside the most recently added tag of that level
+        l4 <- xml2::xml_children(l3)
+        xml_add_child(l4[length(l4)], "url")
+        l5 <- xml2::xml_children(l4)
+        xml_add_child(l5[length(l5)], "style", record_list2$Book[[1]]$`pdf-urls`[i])
+        l6 <- xml2::xml_children(l5)
+    }
+}
+cat(as.character(xml2::as_xml_document(real))) # sanity check
 
 
 
-
-
-xml_add_child(l2[length(l3)], "year")
-l3[6]
-
-
-
-
+########## Step 5: write output to xml
+# write_xml(real, paste0("data/",format(Sys.time(), "%Y%m%d"), "_book_output.xml"), options = "format")
+real <- stringr::str_remove_all(real, "(\n +|\n)")
+real <- as.character(real)
+# data.table::fwrite(real, "data/20230102/testoutput.xml")
+write(real, "data/20230102/testoutput.xml")
