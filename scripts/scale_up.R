@@ -105,7 +105,19 @@ for(i in 1:nrow(data2)){
     }
 }
 cat(as.character(xml2::as_xml_document(real))) # sanity check
-
+#----- <title>
+# xml_add_child(l2, "titles")
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$title[i]) == FALSE){
+        xml_add_child(l2[i], "titles")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[3], "title")
+        l4 <- xml2::xml_children(l3)
+        xml_add_child(l4[2], "style", record_list2$Book[[i]]$title)
+        l5 <- xml2::xml_children(l4)
+    }
+}
+cat(as.character(xml2::as_xml_document(real))) # sanity check
 
 
 
