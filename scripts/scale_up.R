@@ -95,13 +95,13 @@ for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$author[i]) == FALSE){
         xml_add_child(l2[i], "contributors")
         l3 <- xml2::xml_children(l2)
-        xml_add_child(l3[2], "authors")
+        xml_add_child(l3[length(l3)], "authors")
         l4 <- xml2::xml_children(l3)
-        xml_add_child(l4[1], "author")
+        xml_add_child(l4[length(l4)], "author")
         l5 <- xml2::xml_children(l4)
-        xml_set_attr(l5[1], "role", "author")
+        xml_set_attr(l5[length(l5)], "role", "author")
         l6 <- xml2::xml_children(l5)
-        xml_add_child(l5[1], "style", record_list2$Book[[i]]$author)
+        xml_add_child(l5[length(l5)], "style", record_list2$Book[[i]]$author)
     }
 }
 cat(as.character(xml2::as_xml_document(real))) # sanity check
@@ -110,9 +110,9 @@ for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$title[i]) == FALSE){
         xml_add_child(l2[i], "titles")
         l3 <- xml2::xml_children(l2)
-        xml_add_child(l3[3], "title")
+        xml_add_child(l3[length(l3)], "title")
         l4 <- xml2::xml_children(l3)
-        xml_add_child(l4[2], "style", record_list2$Book[[i]]$title)
+        xml_add_child(l4[length(l4)], "style", record_list2$Book[[i]]$title)
         l5 <- xml2::xml_children(l4)
     }
 }
@@ -121,8 +121,9 @@ cat(as.character(xml2::as_xml_document(real))) # sanity check
 cat(as.character(xml2::as_xml_document(real))) # sanity check
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$location[i]) == FALSE){
-        xml_add_child(l2[i], "location", record_list2$Book[[i]]$location)
+        xml_add_child(l2[i], "location")
         l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "style", record_list2$Book[[i]]$location)
     }
 }
 cat(as.character(xml2::as_xml_document(real))) # sanity check
@@ -130,19 +131,40 @@ cat(as.character(xml2::as_xml_document(real))) # sanity check
 cat(as.character(xml2::as_xml_document(real))) # sanity check
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$`cover-type`[i]) == FALSE){
+        xml_add_child(l2[i], "cover-type")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "style", record_list2$Book[[i]]$`cover-type`)
+    }
+}
+cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <year>
+cat(as.character(xml2::as_xml_document(real))) # sanity check
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$`year`[i]) == FALSE){
+        xml_add_child(l2[i], "dates")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "year") # pointing the index to length() adds sub-tags inside the most recently added tag of that level
+        l4 <- xml2::xml_children(l3)
+        xml_add_child(l4[length(l4)], "style", record_list2$Book[[1]]$`year`[i])
+    }
+}
+cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <pages>
+cat(as.character(xml2::as_xml_document(real))) # sanity check
+# xml_add_child(l2, "pages")
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$`pages`[i]) == FALSE){
         xml_add_child(l2[i], "cover-type", record_list2$Book[[i]]$`cover-type`)
         l3 <- xml2::xml_children(l2)
     }
 }
-cat(as.character(xml2::as_xml_document(real))) # sanity check
 
 
 
 
 
-
-
-
+xml_add_child(l2[length(l3)], "year")
+l3[6]
 
 
 
