@@ -57,16 +57,18 @@ record_list2$Book <- list(record_list$`Book`)
 data2 <- data %>% subset(`Reference Type` == "Book")
 
 # 4.1. instantiate new xml document and add root node
+#----- <xml>
 real <- xml2::xml_new_root("xml") # instantiate root node
 cat(as.character(xml2::as_xml_document(real))) # sanity check
 # 4.2. nest a level-1 child-node inside root (level-zero) node
+#----- <records>
 xml_add_child(real, # the node into which you want to nest a child node
               "records") # the name of the node you're adding
 cat(as.character(xml2::as_xml_document(real))) # sanity check
 # 4.3. nest a level-2 child node inside level-1 node
 l1 <- xml2::xml_children(real) # define what the level-1 tags are
 xml2::xml_children(l1)
-# xml_add_child(l1, "record")
+#----- <record>
 for(row in 1:nrow(data2)){ # loop that adds one <record> tag for each row in the df
     xml_add_child(l1, "record")
 }
@@ -75,34 +77,34 @@ cat(as.character(xml2::as_xml_document(real))) # sanity check
 # 4.4. nest level-3 child nodes inside level 2 node
 l2 <- xml2::xml_children(l1) # define what the level-2 tags are
 xml2::xml_children(l2) # look at the l4 tags
-# xml_add_child(l2, "ref-type", 5)
-
-# xml_add_child(l2, "ref-type") # every <record> tag gets a <ref-type> tag; this is a required tag
-
+#-----  <ref-type>
 for(i in 1:nrow(data2)){
-    xml_add_child(l2, "ref-type", data2$`value`[i])
-}
-
-
-
-
-
-
-
+    if (is.na(record_list2$Book[[1]]$`ref-type`[i]) == FALSE){
+        xml_add_child(l2, "ref-type", data2$`value`[i])    
+    }
+    }
 xml2::xml_children(l2)
 cat(as.character(xml2::as_xml_document(real))) # sanity check
-
 l3 <- xml2::xml_children(l2)
-# xml_set_attr(l3[1], "name", names(record_list)[1]) # how to create an attribute and set its value
-
 for(i in 1:nrow(data2)){
     xml_set_attr(l3, "name", data2$`Reference Type`[i])
 }
-
 cat(as.character(xml2::as_xml_document(real))) # sanity check
-
-
-
+#----- <author>
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$author[i]) == FALSE){
+        xml_add_child(l2[i], "contributors")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[2], "authors")
+        l4 <- xml2::xml_children(l3)
+        xml_add_child(l4[1], "author")
+        l5 <- xml2::xml_children(l4)
+        xml_set_attr(l5[1], "role", "author")
+        l6 <- xml2::xml_children(l5)
+        xml_add_child(l5[1], "style", record_list2$Book[[i]]$author)
+    }
+}
+cat(as.character(xml2::as_xml_document(real))) # sanity check
 
 
 
