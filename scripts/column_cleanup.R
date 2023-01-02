@@ -9,13 +9,14 @@ library(data.table)
 library(tibble)
 
 ########## Step 1: read in xlsx as dataframe
-book <- readxl::read_excel("data/example_book_section.xlsx")
+# book <- readxl::read_excel("data/example_book_section.xlsx")
+book <- readxl::read_excel("data/20221116_excel_example.xlsx")
 # book <- readxl::read_excel("data/R8 OG Reference Entry(1-3).xlsx")
 book <-
     book %>% # remove columns from 'book' that we know won't have an xml tag
     select(-c('ID', 'Start time', 'Completion time', 'Email', 'Name')) # confirm that we don't want to Forms metadata in EndNote
 ##########  Step 2: make a lookup table. A dataframe that has each xlsx column name and its equivalent xml tag.
-xlsx_colname <- colnames(data) # capture the xlsx column names in an array
+xlsx_colname <- colnames(book) # capture the xlsx column names in an array
 lookup <- data.frame( # make a dataframe named 'lookup'
     xlsx_colname = xlsx_colname, # add a column named $xlsx_colnames to 'lookup' and assign it values 'xlsx_colnames'
     xml_tag = NA # add empty column named xml_tags so we can fill correct values in next steps
@@ -61,7 +62,7 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
 # <author>
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("author", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
-    'authors', # assign this value
+    'author', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 # <attach-files>
@@ -96,12 +97,6 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
     'volume', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
-# <number>
-lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
-    grepl("issue", lookup$xlsx_colname, ignore.case = TRUE) == TRUE,  # if $xlsx_colnames[row] contains this word
-    'number', # assign this value
-    lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
-)
 # <pages>
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("Page Range", lookup$xlsx_colname, ignore.case = TRUE) == TRUE,  # if $xlsx_colnames[row] contains this word
@@ -111,7 +106,7 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
 # <tertiary-authors>
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("series editor", lookup$xlsx_colname, ignore.case = TRUE) == TRUE,  # if $xlsx_colnames[row] contains this word
-    'tertiary-authors', # assign this value
+    'series editor', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 # <pub-location>
@@ -130,7 +125,9 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
 )
 # <number>
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
-    grepl("document number", lookup$xlsx_colname, ignore.case = TRUE) == TRUE,  # if $xlsx_colnames[row] contains this word
+    grepl("document number", lookup$xlsx_colname, ignore.case = TRUE) == TRUE|
+        grepl("session", lookup$xlsx_colname, ignore.case = TRUE) == TRUE |
+        grepl("issue", lookup$xlsx_colname, ignore.case = TRUE) == TRUE,  # if $xlsx_colnames[row] contains this word
     'number', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
@@ -154,7 +151,7 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
 )
 # <num-vols>
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
-    grepl("session", lookup$xlsx_colname, ignore.case = TRUE) == TRUE,  # if $xlsx_colnames[row] contains this word
+    grepl("number of volumes", lookup$xlsx_colname, ignore.case = TRUE) == TRUE,  # if $xlsx_colnames[row] contains this word
     'num-vols', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
@@ -169,14 +166,14 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
 # <secondary-authors>
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("editor", lookup$xlsx_colname, ignore.case = TRUE) == TRUE,  # if $xlsx_colnames[row] contains this word
-    'secondary-authors', # assign this value
+    'editor', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 # <image-urls>
 # <author>
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("photographer", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
-    'authors', # assign this value
+    'photographer', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 # Photograph caption
@@ -200,13 +197,13 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
 # Cartographer(s)
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("Cartographer", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
-    'authors', # assign this value
+    'cartographer', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 # Advisor
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("advisor", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
-    'authors', # assign this value
+    'advisor', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 # Cover type
