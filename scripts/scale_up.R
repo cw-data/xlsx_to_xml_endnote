@@ -186,6 +186,17 @@ for(i in 1:nrow(data2)){
 }
 # cat(as.character(xml2::as_xml_document(real))) # sanity check
 
+#----- <research-notes>
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$`research-notes`[i]) == FALSE){
+        xml_add_child(l2[i], "research-notes")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "style", record_list2$Book[[1]]$`research-notes`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
+        l4 <- xml2::xml_children(l3)
+    }
+}
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
 #----- <pages>
 cat(as.character(xml2::as_xml_document(real))) # sanity check
 # xml_add_child(l2, "pages")
