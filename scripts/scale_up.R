@@ -328,4 +328,4 @@ cat(as.character(xml2::as_xml_document(real))) # sanity check
 real <- stringr::str_remove_all(real, "(\n +|\n)")
 real <- as.character(real)
 # data.table::fwrite(real, "data/20230102/testoutput.xml")
-write(real, "data/20230102/testoutput.xml")
+write(real, "data/20230104/20230104testoutput.xml")
