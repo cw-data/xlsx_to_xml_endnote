@@ -7,7 +7,7 @@ Year,year
 Where did the research take place/what is the location of the reference?,location
 Reference description,research-notes
 Cover and/or forest type,cover-type
-Stable URL or DOI,web-urls
+Stable URL or DOI,related-urls
 Title2,title
 Photographer(s),photographer
 Year2,year
@@ -16,7 +16,7 @@ Is this photograph in the public domain?,ppv-rev
 Where did the research take place/what is the location of the reference?2,location
 Photograph caption,caption
 Cover and/or forest type2,cover-type
-Stable URL or DOI2,web-urls
+Stable URL or DOI2,related-urls
 Title3,title
 Cartographer(s),cartographer
 Year3,year
@@ -25,7 +25,7 @@ Year3,year
 Where did the research take place/what is the location of the reference?3,location
 Map description,caption
 Cover and/or forest type3,cover-type
-Stable URL or DOI3,web-urls
+Stable URL or DOI3,related-urls
 Title4,title
 Author(s)2,author
 Year4,year
@@ -37,7 +37,7 @@ Page Range,pages
 Where did the research take place/what is the location of the reference?4,location
 Reference description2,research-notes
 Cover and/or forest type4,cover-type
-Stable URL or DOI4,web-urls
+Stable URL or DOI4,related-urls
 Title5,title
 Author(s)3,author
 Year5,year
@@ -55,7 +55,7 @@ Edition,edition
 Reference description3,research-notes
 Where did the research take place/what is the location of the reference?5,location
 Cover and/or forest type5,cover-type
-Stable URL or DOI5,web-urls
+Stable URL or DOI5,related-urls
 Title6,title
 Author(s)4,author
 Year6,year
@@ -63,7 +63,7 @@ Year6,year
 Where did the research take place/what is the location of the reference?6,location
 Reference description4,research-notes
 Cover and/or forest type6,cover-type
-Stable URL or DOI6,web-urls
+Stable URL or DOI6,related-urls
 Number of Volumes,num-vols
 Series editor2,series-editor
 Series title2,tertiary-title
@@ -75,7 +75,7 @@ Year7,year
 Where did the research take place/what is the location of the reference?7,location
 Reference description5,research-notes
 Cover and/or forest type7,cover-type
-Stable URL or DOI7,web-urls
+Stable URL or DOI7,related-urls
 Session,number
 Paper Number,section
 Editor,editor
@@ -92,7 +92,7 @@ Year8,year
 Where did the research take place/what is the location of the reference?8,location
 Reference description6,research-notes
 Cover and/or forest type8,cover-type
-Stable URL or DOI8,web-urls
+Stable URL or DOI8,related-urls
 Academic Department,secondary-title
 University,publisher
 Degree,volume
@@ -114,7 +114,7 @@ Series Title3,tertiary-title
 Where did the research take place/what is the location of the reference?9,location
 Reference description7,research-notes
 Cover and/or forest type9,cover-type
-Stable URL or DOI9,web-urls
+Stable URL or DOI9,related-urls
 Number of Pages3,pages
 Title10,title
 Book Title,secondary-title
@@ -135,7 +135,7 @@ Chapter Number,section
 Where did the research take place/what is the location of the reference?10,location
 Reference description8,research-notes
 Cover and/or forest type10,cover-type
-Stable URL or DOI10,web-urls
+Stable URL or DOI10,related-urls
 Title11,title
 Author(s)/Reporter(s),author
 Year11,year
@@ -144,7 +144,7 @@ Newspaper,secondary-title
 Where did the research take place/what is the location of the reference?11,location
 Reference description9,research-notes
 Cover and/or forest type11,cover-type
-Stable URL or DOI11,web-urls
+Stable URL or DOI11,related-urls
 Place published5,pub-location
 Publisher5,publisher
 Page Range4,pages

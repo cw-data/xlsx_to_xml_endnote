@@ -34,6 +34,7 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
     grepl("book title", lookup$xlsx_colname, ignore.case = TRUE) == TRUE | # if $xlsx_colnames[row] contains this word OR
         grepl("journal", lookup$xlsx_colname, ignore.case = TRUE) == TRUE | # this word OR
         grepl("newspaper", lookup$xlsx_colname, ignore.case = TRUE) == TRUE | # this word OR
+        grepl("series title", lookup$xlsx_colname, ignore.case = TRUE) == TRUE | # this word OR
         grepl("Academic Department", lookup$xlsx_colname, ignore.case = TRUE) == TRUE | # this word OR
         grepl("Conference name", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # this word:
     'secondary-title', # assign this value
@@ -76,7 +77,7 @@ lookup$xml_tag <- ifelse(
     'pdf-urls', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
-# <location>
+# <modified-date> `location`
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("where did the", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word:
     'location', # assign this value
@@ -94,10 +95,10 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
     'research-notes', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
-# <web-urls>
+# <related-urls> # this is the stable URL or DOI
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("Stable URL", lookup$xlsx_colname, ignore.case = TRUE) == TRUE, # if $xlsx_colnames[row] contains this word
-    'web-urls', # assign this value
+    'related-urls', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
 # <volume>
@@ -179,7 +180,7 @@ lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the followin
     'editor', # assign this value
     lookup$xml_tag # else: just leave the value of lookup$xml_tags as it was
 )
-# <tertiary-authors>
+# <secondary-authors>
 lookup$xml_tag <- ifelse( # the value in lookup$xml_tags depends on the following logic:
     grepl("series editor", lookup$xlsx_colname, ignore.case = TRUE) == TRUE,  # if $xlsx_colnames[row] contains this word
     'series-editor', # assign this value

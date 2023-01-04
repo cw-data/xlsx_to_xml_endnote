@@ -110,7 +110,7 @@ for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$editor[i]) == FALSE){
         # xml_add_child(l2[1], "contributors")
         l3 <- xml2::xml_children(l2)
-        xml_add_child(l3[2], "secondary-authors") # need to check this index on real data
+        xml_add_child(l3[2], "tertiary-authors") # confirmed data/20230104/Book_example.xml
         l4 <- xml2::xml_children(l3)
         xml_add_child(l4[length(l4)], "author")
         l5 <- xml2::xml_children(l4)
@@ -132,21 +132,33 @@ for(i in 1:nrow(data2)){
     }
 }
 # cat(as.character(xml2::as_xml_document(real))) # sanity check
-#----- <location>
+#----- <secondary-title> i.e., series title
+for(i in 1:nrow(data2)){
+    if (is.na(record_list2$Book[[1]]$title[i]) == FALSE){
+        xml_add_child(l2[i], "titles")
+        l3 <- xml2::xml_children(l2)
+        xml_add_child(l3[length(l3)], "secondary-title")
+        l4 <- xml2::xml_children(l3)
+        xml_add_child(l4[length(l4)], "style", record_list2$Book[[i]]$title)
+        l5 <- xml2::xml_children(l4)
+    }
+}
+# cat(as.character(xml2::as_xml_document(real))) # sanity check
+#----- <modified-date> `location`
 # cat(as.character(xml2::as_xml_document(real))) # sanity check
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$location[i]) == FALSE){
-        xml_add_child(l2[i], "location")
+        xml_add_child(l2[i], "modified-date")
         l3 <- xml2::xml_children(l2)
         xml_add_child(l3[length(l3)], "style", record_list2$Book[[i]]$location)
     }
 }
 # cat(as.character(xml2::as_xml_document(real))) # sanity check
-#----- <cover-type>
+#----- <custom7> i.e., `cover-type`
 # cat(as.character(xml2::as_xml_document(real))) # sanity check
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$`cover-type`[i]) == FALSE){
-        xml_add_child(l2[i], "cover-type")
+        xml_add_child(l2[i], "custom7") # per data/20240104/Book_example.xml
         l3 <- xml2::xml_children(l2)
         xml_add_child(l3[length(l3)], "style", record_list2$Book[[i]]$`cover-type`)
     }
@@ -186,13 +198,13 @@ for(i in 1:nrow(data2)){
     }
 }
 # cat(as.character(xml2::as_xml_document(real))) # sanity check
-#----- <web-urls>
+#----- <related-urls>
 # cat(as.character(xml2::as_xml_document(real))) # sanity check
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$`web-urls`[i]) == FALSE){
         xml_add_child(l2[i], "urls")
         l3 <- xml2::xml_children(l2)
-        xml_add_child(l3[length(l3)], "web-urls") # pointing the index to length() adds sub-tags inside the most recently added tag of that level
+        xml_add_child(l3[length(l3)], "related-urls") # pointing the index to length() adds sub-tags inside the most recently added tag of that level
         l4 <- xml2::xml_children(l3)
         xml_add_child(l4[length(l4)], "url")
         l5 <- xml2::xml_children(l4)
@@ -279,12 +291,12 @@ for(i in 1:nrow(data2)){
     }
 }
 # cat(as.character(xml2::as_xml_document(real))) # sanity check
-#----- <series-editor>
+#----- <secondary-authors> "series-editor"
 for(i in 1:nrow(data2)){
     if (is.na(record_list2$Book[[1]]$`series-editor`[i]) == FALSE){
         # xml_add_child(l2[1], "contributors")
         l3 <- xml2::xml_children(l2)
-        xml_add_child(l3[2], "tertiary-authors") # need to check this index on real data
+        xml_add_child(l3[2], "secondary-authors") # confirmed data/20230104/Book_example.xml
         l4 <- xml2::xml_children(l3)
         xml_add_child(l4[length(l4)], "author")
         l5 <- xml2::xml_children(l4)
