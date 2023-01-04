@@ -201,7 +201,7 @@ for(i in 1:nrow(data2)){
 #----- <related-urls>
 # cat(as.character(xml2::as_xml_document(real))) # sanity check
 for(i in 1:nrow(data2)){
-    if (is.na(record_list2$Book[[1]]$`web-urls`[i]) == FALSE){
+    if (is.na(record_list2$Book[[1]]$`related-urls`[i]) == FALSE){
         xml_add_child(l2[i], "urls")
         l3 <- xml2::xml_children(l2)
         xml_add_child(l3[length(l3)], "related-urls") # pointing the index to length() adds sub-tags inside the most recently added tag of that level
