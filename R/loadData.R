@@ -91,7 +91,7 @@ loadData <- function(forms_spreadsheet){
                             ref_type_lookup = ref_type_lookup)
         },
         finally = {
-            message("\`forms_spreadsheet` parsed to `record_list`...\nOutput available as `record_list` in global envrionment...\nReady to build xml!\n\nEnter 'y' to build xml or 'n' to quit...\n") # message indicating the function job completed
+            message("Ready to build xml!\n\nEnter 'y' to build xml or 'n' to quit...\n") # message indicating the function job completed
         }
     )
 }
