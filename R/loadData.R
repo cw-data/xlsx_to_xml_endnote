@@ -10,15 +10,15 @@ loadData <- function(forms_spreadsheet){
             # validate the user-provided `forms_spreadsheet` is a spreadsheet
             if(tools::file_ext(forms_spreadsheet) == "xlsx"){
                 forms_spreadsheet <- readxl::read_excel(forms_spreadsheet)
-                assign("forms_spreadsheet", forms_spreadsheet, envir = globalenv())
+                # assign("forms_spreadsheet", forms_spreadsheet, envir = globalenv())
                 message("`forms_spreadsheet` is xlsx...")
             } else if(tools::file_ext(forms_spreadsheet) == "xls"){
                 forms_spreadsheet <- readxl::read_excel(forms_spreadsheet)
-                assign("forms_spreadsheet", forms_spreadsheet, envir = globalenv())
+                # assign("forms_spreadsheet", forms_spreadsheet, envir = globalenv())
                 message("`forms_spreadsheet` is xls...")
             } else if(tools::file_ext(forms_spreadsheet) == "csv"){
-                data <- data.table::fread(forms_spreadsheet)
-                assign("forms_spreadsheet", forms_spreadsheet, envir = globalenv())
+                forms_spreadsheet <- data.table::fread(forms_spreadsheet)
+                # assign("forms_spreadsheet", forms_spreadsheet, envir = globalenv())
                 message("`forms_spreadsheet` is csv...")
                 # print(tools::file_ext(forms_spreadsheet))
             } else {
@@ -89,6 +89,7 @@ loadData <- function(forms_spreadsheet){
             # pass the validated `forms_spreadsheet` to validateAuthors()
             validateAuthors(forms_spreadsheet = forms_spreadsheet, # pass params to validateAuthors()
                             ref_type_lookup = ref_type_lookup)
+            assign("forms_spreadsheet", forms_spreadsheet, envir = globalenv())
         },
         finally = {
             message("Ready to build xml!\n\nEnter 'y' to build xml or 'n' to quit...\n") # message indicating the function job completed
