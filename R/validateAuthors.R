@@ -1,11 +1,17 @@
-library(dplyr)
-library(data.table)
-library(stringr)
+#-----------------------------------------------------------------------------------------
+#---`buildXML.R` routes static assets (e.g., `record_list`)  to other getter functions----
+#--- a module for `main.R` that creates xml from forms xlsx data -------------------------
+#-----------------------------------------------------------------------------------------
+
+
 
 validateAuthors <- function(forms_spreadsheet, ref_type_lookup){
     tryCatch(
         expr = {
             # here we 
+            library(dplyr)
+            library(data.table)
+            library(stringr)
             lookup <- data.table::fread("resources/colname_tagname_dictionary.csv")
             
             record_list <- vector(mode = "list", length = length(unique(ref_type_lookup$`Reference type (from Form)`))) # create list
@@ -14,7 +20,9 @@ validateAuthors <- function(forms_spreadsheet, ref_type_lookup){
             for(i in 1:length(record_list)){
                 record_list[[i]]$data <- forms_spreadsheet %>%
                     subset(`Reference Type` == ref_type_lookup$`Reference type (from Form)`[i]) %>%
-                    dplyr::select(6,ref_type_lookup$start_col_no[i]:ref_type_lookup$end_col_no[i])
+                    dplyr::select(6,ref_type_lookup$start_col_no[i]:ref_type_lookup$end_col_no[i],158)
+                # col 6 is $ref-type (the plain text reference type)
+                # col 158 is $value (the Endnote key for reference type plain text)
             }
             # use lookup table from scripts/column_cleanup.R to rename columns in `record_list`
             for(elm in 1:length(record_list)){ # loop through each element in `record_list`
