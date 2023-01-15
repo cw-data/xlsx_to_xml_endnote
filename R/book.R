@@ -3,9 +3,12 @@
 #--- a module for `main.R` that creates xml from forms xlsx data -------------------------
 #-----------------------------------------------------------------------------------------
 
-getBook <- function(record_list){
+getBook <- function(record_list, real){
     tryCatch(
         expr = {
+            #----- load project functions
+            source("R/tag_builders/ref_type.R")
+            
             #----- assign static assets for easier indexing
             data <- record_list$Book$data
             if("author_list" %in% names(record_list$Book)){
@@ -24,19 +27,8 @@ getBook <- function(record_list){
                 series_editors <- record_list$Book$series_editor_list
             }
             
-            #---- build xml
-            # 4.1. instantiate new xml document and add root node
-            #----- <xml>
-            real <- xml2::xml_new_root("xml") # instantiate root node
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            # 4.2. nest a level-1 child-node inside root (level-zero) node
-            #----- <records>
-            xml_add_child(real, # the node into which you want to nest a child node
-                          "records") # the name of the node you're adding
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
             # 4.3. nest a level-2 child node inside level-1 node
             l1 <- xml2::xml_children(real) # define what the level-1 tags are
-            # xml2::xml_children(l1)
             #----- <record>
             for(row in 1:nrow(data)){ # loop that adds one <record> tag for each row in the df
                 xml_add_child(l1, "record")
@@ -45,12 +37,11 @@ getBook <- function(record_list){
             # cat(as.character(xml2::as_xml_document(real))) # sanity check
             # 4.4. nest level-3 child nodes inside level 2 node
             l2 <- xml2::xml_children(l1) # define what the level-2 tags are
+            
+            
+            
             #-----  <ref-type>
-            for(i in 1:nrow(data)){
-                if (is.na(data$`ref-type`[i]) == FALSE){
-                    xml_add_child(l2, "ref-type", data$`value`[i])    
-                }
-            }
+            getRefType(record_list, real, data, l2)
             # xml2::xml_children(l2)
             # cat(as.character(xml2::as_xml_document(real))) # sanity check
             l3 <- xml2::xml_children(l2)
