@@ -10,6 +10,8 @@ library(xml2)
 rm(list=ls())
 source("R/loadData.R")
 # source("R/buildXML.R")
+source("R/buildXML.R")
 
 forms_spreadsheet <- "data/20221116_excel_example.xlsx"
 loadData(forms_spreadsheet = forms_spreadsheet)
+buildXML(record_list-record_list, write=TRUE)
