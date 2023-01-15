@@ -30,15 +30,24 @@ validateAuthors <- function(forms_spreadsheet, ref_type_lookup){
                                      old = lookup$xlsx_colname, # based on the key-value pairs established in `test_lookup`
                                      new = lookup$xml_tag, skip_absent = TRUE) # based on key
             }
-            # parse author names
+            # parse names
             for(i in 1:length(record_list)){
-                for(j in 1:nrow(record_list[[i]]$data)){
-                    if("author" %in% colnames(record_list[[i]]$data) == TRUE){
-                        record_list[[i]]$author_list <- stringr::str_split(record_list[[i]]$data$author, "\r\n")
-                    } else if("cartographer" %in% colnames(record_list[[i]]$data) == TRUE){
+                # authors
+                if("author" %in% colnames(record_list[[i]]$data)){ # if there's an $author column
+                    if(length(record_list[[i]]$data$author > 0)){ # and there is at least one entry there
+                        record_list[[i]]$author_list <- stringr::str_split(record_list[[i]]$data$author, "\r\n") # split the string at each newline character
+                    }
+                } else if("cartographer" %in% colnames(record_list[[i]]$data)){
+                    if(length(record_list[[i]]$data$cartographer > 0)){
                         record_list[[i]]$cartographer_list <- stringr::str_split(record_list[[i]]$data$cartographer, "\r\n")
-                    } else if("photographer" %in% colnames(record_list[[i]]$data) == TRUE){
+                    }
+                } else if("photographer" %in% colnames(record_list[[i]]$data)){
+                    if(length(record_list[[i]]$data$photographer > 0)){
                         record_list[[i]]$photographer_list <- stringr::str_split(record_list[[i]]$data$photographer, "\r\n")
+                    }
+                } else if("editor" %in% colnames(record_list[[i]]$data)){
+                    if(length(record_list[[i]]$data$editor > 0)){
+                        record_list[[i]]$editor_list <- stringr::str_split(record_list[[i]]$data$editor, "\r\n")
                     }
                 }
             }
