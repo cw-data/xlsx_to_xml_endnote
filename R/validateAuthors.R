@@ -49,6 +49,10 @@ validateAuthors <- function(forms_spreadsheet, ref_type_lookup){
                     if(length(record_list[[i]]$data$editor > 0)){
                         record_list[[i]]$editor_list <- stringr::str_split(record_list[[i]]$data$editor, "\r\n")
                     }
+                } else if("series-editor" %in% colnames(record_list[[i]]$data)){
+                    if(length(record_list[[i]]$data$`series-editor` > 0)){
+                        record_list[[i]]$series_editor_list <- stringr::str_split(record_list[[i]]$data$`series-editor`, "\r\n")
+                    }
                 }
             }
             assign("record_list", record_list, envir = globalenv())
