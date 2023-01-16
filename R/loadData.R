@@ -90,6 +90,7 @@ loadData <- function(forms_spreadsheet){
             validateAuthors(forms_spreadsheet = forms_spreadsheet, # pass params to validateAuthors()
                             ref_type_lookup = ref_type_lookup)
             assign("forms_spreadsheet", forms_spreadsheet, envir = globalenv())
+            # assign("record_list", record_list, envir = globalenv())
         },
         finally = {
             message("Ready to build xml!\n\nEnter 'y' to build xml or 'n' to quit...\n") # message indicating the function job completed

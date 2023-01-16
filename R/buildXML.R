@@ -2,7 +2,7 @@
 #---`buildXML.R` routes static assets (e.g., `record_list`)  to other getter functions----
 #--- a module for `main.R` that creates xml from forms xlsx data -------------------------
 #-----------------------------------------------------------------------------------------
-
+options(warn=-1)
 buildXML <- function(record_list, write){
     tryCatch(
         expr = {
@@ -16,7 +16,7 @@ buildXML <- function(record_list, write){
                 #----- load project functions
                 source("R/book.R")
                 # source("R/fsPub.R")
-                source("R/journal.R")
+                # source("R/journal.R")
                 # source("R/govDoc.R")
                 # source("R/thesis.R")
                 # source("R/map.R")
@@ -27,15 +27,61 @@ buildXML <- function(record_list, write){
                 # source("R/newspaper.R")
                 # source("R/confProceed.R")
                 
+                #----- start an empty xml doc
+                if(nrow(forms_spreadsheet>0)){
+                    #----- <xml>
+                    real <- xml2::xml_new_root("xml") # instantiate root node
+                    #----- <records>
+                    xml_add_child(real, # the node into which you want to nest a child node
+                                  "records") # the name of the node you're adding
+                } else {
+                    print("There are zero rows of data in `forms_spreadsheet`. Build cancelled.")
+                    break
+                }
                 
-                book <- getBook(record_list)
-                assign("book", book, envir = globalenv())
-                journal <-getJournal(record_list)
-                assign("journal", journal, envir = globalenv())
+                #----- subset data by ref-type and call the appropriate getter function for each ref-type
+                for( i in 1:length(record_list)){
+                    data <- record_list[[i]]$data
+                    # double-check that `loadData()` worked correctly:
+                    if(length(unique(data$`ref-type`))>1){ # if `loadData()` didn't subset data into `ref-type` subsets
+                        break # stop the program
+                        # because the program builds xml one ref-type at a time in the following steps
+                    }
+                    # send the names we parsed in `validateAuthors.R` to the getter functions along their `data`
+                    if(nrow(data)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
+                        if("author_list" %in% names(record_list[[i]])){
+                            authors <- record_list[[i]]$author_list
+                        }
+                        if("cartographer_list" %in% names(record_list[[i]])){
+                            cartographers <- record_list[[i]]$cartographer_list
+                        }
+                        if("photographer_list" %in% names(record_list[[i]])){
+                            photographers <- record_list[[i]]$photographer_list
+                        }
+                        if("editor_list" %in% names(record_list[[i]])){
+                            editors <- record_list[[i]]$editor_list
+                        }
+                        if("series_editor_list" %in% names(record_list[[i]])){
+                            series_editors <- record_list[[i]]$series_editor_list
+                        }
+                    }
+                    if(nrow(data>0)){
+                        if(unique(data$`ref-type`=="Book")){ # if the ref-type is "Book"
+                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                        }
+                    }
+                }
+                #----- format output as string
+                assign("xml_output", real, envir = globalenv()) # save output to global environment so user can see it
+                cat(as.character(xml2::as_xml_document(real))) # print output to console for user
                 
-                if(write==TRUE)(
-                    data.table::fwrite(xmlout, "data/xmlouttest.xml")
-                )
+                
+                #----- write output to file if `write` flag is TRUE
+                if(write==TRUE){
+                    real <- stringr::str_remove_all(real, "(\n +|\n)") # remove newline characters because endnote doesn't like them
+                    real <- as.character(real) # set real as character for
+                    data.table::fwrite(real, "data/xmlouttest.xml")
+                }
             }
         }
         # finally = {
