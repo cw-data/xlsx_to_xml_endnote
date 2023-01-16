@@ -8,6 +8,35 @@ getBook <- function(record_list, real){
         expr = {
             #----- load project functions
             source("R/tag_builders/ref_type.R")
+            source("R/tag_builders/ref_type_name.R")
+            source("R/tag_builders/title.R")
+            source("R/tag_builders/author.R")
+            source("R/tag_builders/editor.R")
+            source("R/tag_builders/year.R")
+            # source("R/tag_builders/pdf_urls.R") # WRITE ME
+            source("R/tag_builders/location.R")
+            source("R/tag_builders/research_notes.R")
+            source("R/tag_builders/cover_type.R")
+            source("R/tag_builders/related_urls.R")
+            # source("R/tag_builders/photographer.R") # WRITE ME
+            # source("R/tag_builders/ppv_rev.R") # WRITE ME
+            # source("R/tag_builders/caption.R") # WRITE ME
+            # source("R/tag_builders/cartographer.R") # WRITE ME
+            # source("R/tag_builders/date.R") # WRITE ME
+            source("R/tag_builders/secondary_title.R")
+            source("R/tag_builders/volume.R")
+            # source("R/tag_builders/number.R") # WRITE ME
+            source("R/tag_builders/pages.R")
+            source("R/tag_builders/series_editor.R")
+            source("R/tag_builders/tertiary_title.R")
+            source("R/tag_builders/pub_location.R")
+            source("R/tag_builders/publisher.R")
+            
+            
+            
+            source("R/tag_builders/edition.R")
+            
+            source("R/tag_builders/num_vols.R")
             
             #----- assign static assets for easier indexing
             data <- record_list$Book$data
@@ -33,221 +62,204 @@ getBook <- function(record_list, real){
             for(row in 1:nrow(data)){ # loop that adds one <record> tag for each row in the df
                 xml_add_child(l1, "record")
             }
-            # xml2::xml_children(l1)
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            # 4.4. nest level-3 child nodes inside level 2 node
-            l2 <- xml2::xml_children(l1) # define what the level-2 tags are
-            
-            
-            
+            cat(as.character(xml2::as_xml_document(real))) # sanity check
+
             #-----  <ref-type>
-            getRefType(record_list, real, data, l2)
-            # xml2::xml_children(l2)
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            l3 <- xml2::xml_children(l2)
-            for(i in 1:nrow(data)){
-                xml_set_attr(l3, "name", data$`ref-type`[i])
+            real <- getRefType(real, data)
+            real <- getRefTypeName(real, data)
+            
+            #----- <title>
+            if("title" %in% colnames(data)){
+                real <- getTitle(real, data)
             }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
+            
             #----- <author>
             if("author_list" %in% names(record_list$Book)){ # only make <author> tags if there are authors
-                for(i in 1:nrow(data)){
-                    if (!is.na(data$author[i])){
-                        xml_add_child(l2[i], "contributors")
-                        l3 <- xml2::xml_children(l2)
-                        xml_add_child(l3[length(l3)], "authors")
-                        l4 <- xml2::xml_children(l3)
-                        for(j in 1:length(authors[[i]])){
-                            xml_add_child(l4[length(l4)], "author")
-                            l5 <- xml2::xml_children(l4)
-                            xml_set_attr(l5[length(l5)], "role", "author")
-                            l6 <- xml2::xml_children(l5)
-                            xml_add_child(l5[length(l5)], "style", authors[[i]][[j]])
-                        }
-                    }
-                }
-            }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            #----- <editor>
-            if("editor_list" %in% names(record_list$Book)){
-                for(i in 1:nrow(data)){
-                    if (!is.na(data$editor[i])){
-                        l3 <- xml2::xml_children(l2)
-                        xml_add_child(l3[2], "tertiary-authors") # confirmed data/20230104/Book_example.xml
-                        l4 <- xml2::xml_children(l3)
-                        for(j in 1:length(authors[[i]])){
-                            xml_add_child(l4[length(l4)], "author")
-                            l5 <- xml2::xml_children(l4)
-                            xml_set_attr(l5[length(l5)], "role", "editor")
-                            l6 <- xml2::xml_children(l5)
-                            xml_add_child(l5[length(l5)], "style", editors[[i]][[j]])
-                        }
-                    }
-                }
+                real <- getAuthor(real, data, authors)
             }
             
-            # for(i in 1:nrow(data)){
-            #     if (is.na(data$editor[i]) == FALSE){
-            #         # xml_add_child(l2[1], "contributors")
-            #         l3 <- xml2::xml_children(l2)
-            #         xml_add_child(l3[2], "tertiary-authors") # confirmed data/20230104/Book_example.xml
-            #         l4 <- xml2::xml_children(l3)
-            #         xml_add_child(l4[length(l4)], "author")
-            #         l5 <- xml2::xml_children(l4)
-            #         xml_set_attr(l5[length(l5)], "role", "editor")
-            #         l6 <- xml2::xml_children(l5)
-            #         xml_add_child(l5[length(l5)], "style", data$editor)
-            #     }
-            # }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            #----- <title>
-            for(i in 1:nrow(data)){
-                if (!is.na(data$title[i])){
-                    xml_add_child(l2[i], "titles")
-                    l3 <- xml2::xml_children(l2)
-                    xml_add_child(l3[length(l3)], "title")
-                    l4 <- xml2::xml_children(l3)
-                    xml_add_child(l4[length(l4)], "style", data$title)
-                    l5 <- xml2::xml_children(l4)
-                }
-            }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            #----- <secondary-title> i.e., series title
-            for(i in 1:nrow(data)){
-                if (!is.na(data$title[i])){
-                    xml_add_child(l2[i], "titles")
-                    l3 <- xml2::xml_children(l2)
-                    xml_add_child(l3[length(l3)], "secondary-title")
-                    l4 <- xml2::xml_children(l3)
-                    xml_add_child(l4[length(l4)], "style", data$title)
-                    l5 <- xml2::xml_children(l4)
-                }
-            }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            #----- <modified-date> `location`
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            for(i in 1:nrow(data)){
-                if (!is.na(data$location[i])){
-                    xml_add_child(l2[i], "modified-date")
-                    l3 <- xml2::xml_children(l2)
-                    xml_add_child(l3[length(l3)], "style", data$location)
-                }
-            }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            #----- <custom7> i.e., `cover-type`
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            for(i in 1:nrow(data)){
-                if (!is.na(data$`cover-type`[i])){
-                    xml_add_child(l2[i], "custom7") # per data/20240104/Book_example.xml
-                    l3 <- xml2::xml_children(l2)
-                    xml_add_child(l3[length(l3)], "style", data$`cover-type`)
-                }
-            }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
             #----- <year>
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            for(i in 1:nrow(data)){
-                if (!is.na(data$`year`[i])){
-                    xml_add_child(l2[i], "dates")
-                    l3 <- xml2::xml_children(l2)
-                    xml_add_child(l3[length(l3)], "year") # pointing the index to length() adds sub-tags inside the most recently added tag of that level
-                    l4 <- xml2::xml_children(l3)
-                    xml_add_child(l4[length(l4)], "style", data$`year`[i])
-                }
+            if("year" %in% colnames(data)){
+                real <- getYear(real, data)
             }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            #----- <pub-location>
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            for(i in 1:nrow(data)){
-                if (!is.na(data$`pub-location`[i])){
-                    xml_add_child(l2[i], "pub-location")
-                    l3 <- xml2::xml_children(l2)
-                    xml_add_child(l3[length(l3)], "style", data$`pub-location`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
-                    l4 <- xml2::xml_children(l3)
-                }
+            
+            #----- <pdf-urls>
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            # NEED TO WRITE THIS
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            if("pdf-urls" %in% colnames(data)){
+                real <- getPdfUrls(real, data)
             }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            #----- <publisher>
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            for(i in 1:nrow(data)){
-                if (!is.na(data$`publisher`[i])){
-                    xml_add_child(l2[i], "publisher")
-                    l3 <- xml2::xml_children(l2)
-                    xml_add_child(l3[length(l3)], "style", data$`publisher`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
-                    l4 <- xml2::xml_children(l3)
-                }
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            
+            #----- <modified-date> `location`
+            if("location" %in% colnames(data)){
+                real <- getLocation(real, data)
             }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            #----- <related-urls>
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            for(i in 1:nrow(data)){
-                if (!is.na(data$`related-urls`[i])){
-                    xml_add_child(l2[i], "urls")
-                    l3 <- xml2::xml_children(l2)
-                    xml_add_child(l3[length(l3)], "related-urls") # pointing the index to length() adds sub-tags inside the most recently added tag of that level
-                    l4 <- xml2::xml_children(l3)
-                    xml_add_child(l4[length(l4)], "url")
-                    l5 <- xml2::xml_children(l4)
-                    xml_add_child(l5[length(l5)], "style", data$`related-urls`[i])
-                    l6 <- xml2::xml_children(l5)
-                }
-            }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
+            
             #----- <research-notes>
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            for(i in 1:nrow(data)){
-                if (!is.na(data$`research-notes`[i])){
-                    xml_add_child(l2[i], "research-notes")
-                    l3 <- xml2::xml_children(l2)
-                    xml_add_child(l3[length(l3)], "style", data$`research-notes`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
-                    l4 <- xml2::xml_children(l3)
-                }
+            if("research-notes" %in% colnames(data)){
+                real <- getResearchNotes(real, data)
             }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            #----- <pages>
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            for(i in 1:nrow(data)){
-                if (!is.na(data$`pages`[i])){
-                    xml_add_child(l2[i], "pages")
-                    l3 <- xml2::xml_children(l2)
-                    xml_add_child(l3[length(l3)], "style", data$`pages`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
-                    l4 <- xml2::xml_children(l3)
-                }
+            
+            #----- <custom7> i.e., `cover-type`
+            if("cover-type" %in% colnames(data)){
+                real <- getCoverType(real, data)
             }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            #----- <edition>
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            for(i in 1:nrow(data)){
-                if (!is.na(data$`edition`[i])){
-                    xml_add_child(l2[i], "edition")
-                    l3 <- xml2::xml_children(l2)
-                    xml_add_child(l3[length(l3)], "style", data$`edition`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
-                    l4 <- xml2::xml_children(l3)
-                }
+            
+            #----- <related-urls>
+            if("related-urls" %in% colnames(data)){
+                real <- getRelatedUrls(real, data)
             }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
+            
+            #----- <photographer>
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            # NEED TO WRITE THIS
+            if("photographer_list" %in% names(record_list$Book)){
+                real <- getPhotographers(real, data, editors)
+            }
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            
+            #----- <ppv-rev>
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            # NEED TO WRITE THIS
+            if("ppv-rev" %in% colnames(data)){
+                real <- getPpvRev(real, data)
+            }
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            
+            #----- <caption>
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            # NEED TO WRITE THIS
+            if("caption" %in% colnames(data)){
+                real <- getCaption(real, data)
+            }
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            
+            #----- <cartographer>
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            # NEED TO WRITE THIS
+            if("cartographer_list" %in% names(record_list$Book)){
+                real <- getCartographer(real, data, cartographers)
+            }
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            
+            #----- <date>
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            # NEED TO WRITE THIS
+            if("date" %in% colnames(data)){
+                real <- getDate(real, data)
+            }
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            
+            #----- <secondary-title> i.e., series title
+            if("secondary-title" %in% colnames(data)){
+                real <- getSecondaryTitle(real, data)
+            }
+            
             #----- <volume>
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            for(i in 1:nrow(data)){
-                if (!is.na(data$`volume`[i])){
-                    xml_add_child(l2[i], "volume")
-                    l3 <- xml2::xml_children(l2)
-                    xml_add_child(l3[length(l3)], "style", data$`volume`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
-                    l4 <- xml2::xml_children(l3)
-                }
+            if("volume" %in% colnames(data)){
+                real <- getVolume(real, data)
             }
+            
+            #----- <number>
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            # NEED TO WRITE THIS
+            if("number" %in% colnames(data)){
+                real <- getNumber(real, data)
+            }
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            
+            #----- <pages>
+            if("pages" %in% colnames(data)){
+                getPages(real, data)
+            }
+            
+            #----- <series-editor>
+            if("series_editor_list" %in% names(record_list$Book)){
+                real <- getSeriesEditors(real, data, series_editors)
+            }
+            
+            #----- <tertiary-title>
+            if("tertiary-title" %in% colnames(data)){
+                real <- getTertiaryTitle(real, data)
+            }
+            
+            #----- <pub-location>
+            if("pub-location" %in% colnames(data)){
+                real <- getPubLocation(real, data)
+            }
+            
+            #----- <publisher>
+            if("publisher" %in% colnames(data)){
+                real <- getPublisher(real, data)
+            }
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            #----- <editor>
+            if("editor_list" %in% names(record_list$Book)){
+                real <- getEditor(real, data, editors)
+            }
+
+            
+
+            #----- <secondary-title> i.e., series title
+            if("secondary-title" %in% colnames(data)){
+                real <- getSecondaryTitle(real, data)
+            }
+            
+            
+            
+            
+            
+            
+
             # cat(as.character(xml2::as_xml_document(real))) # sanity check
+            
+            
+            
+
+            
+            
+            
+            
+            
+            
+            #----- <edition>
+            if("edition" %in% colnames(data)){
+                getEdition(real, data)
+            }
+
+            
+            
             #----- <num-vols>
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            for(i in 1:nrow(data)){
-                if (!is.na(data$`num-vols`[i])){
-                    xml_add_child(l2[i], "num-vols")
-                    l3 <- xml2::xml_children(l2)
-                    xml_add_child(l3[length(l3)], "style", data$`num-vols`[i]) # pointing the index to length() adds sub-tags inside the most recently added tag of that level
-                    l4 <- xml2::xml_children(l3)
-                }
+            if("num-vols" %in% colnames(data)){
+                getNumVols(real, data)
             }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check
+            
             #----- <secondary-volume>
             # cat(as.character(xml2::as_xml_document(real))) # sanity check
             for(i in 1:nrow(data)){
@@ -259,17 +271,7 @@ getBook <- function(record_list, real){
                 }
             }
             # cat(as.character(xml2::as_xml_document(real))) # sanity check
-            #----- <tertiary-title>
-            for(i in 1:nrow(data)){
-                if (!is.na(data$`tertiary-title`[i])){
-                    # xml_add_child(l2[i], "titles")
-                    l3 <- xml2::xml_children(l2)
-                    xml_add_child(l3[3], "tertiary-title")
-                    l4 <- xml2::xml_children(l3)
-                    xml_add_child(l4[length(l4)], "style", data$`tertiary-title`)
-                    l5 <- xml2::xml_children(l4)
-                }
-            }
+            
             # cat(as.character(xml2::as_xml_document(real))) # sanity check
             #----- <secondary-authors> "series-editor"
             # for(i in 1:nrow(data)){
@@ -286,22 +288,7 @@ getBook <- function(record_list, real){
             #     }
             # }
             
-            if("series_editor_list" %in% names(record_list$Book)){
-                for(i in 1:nrow(data)){
-                    if (!is.na(data$`series-editor`[i])){
-                        l3 <- xml2::xml_children(l2)
-                        xml_add_child(l3[2], "secondary-authors") # confirmed data/20230104/Book_example.xml
-                        l4 <- xml2::xml_children(l3)
-                        for(j in 1:length(authors[[i]])){
-                            xml_add_child(l4[length(l4)], "author")
-                            l5 <- xml2::xml_children(l4)
-                            xml_set_attr(l5[length(l5)], "role", "series-editor")
-                            l6 <- xml2::xml_children(l5)
-                            xml_add_child(l5[length(l5)], "style", series_editors[[i]][[j]])
-                        }
-                    }
-                }
-            }
+            
             
             
             
