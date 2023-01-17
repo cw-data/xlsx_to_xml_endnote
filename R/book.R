@@ -33,7 +33,6 @@ getBook <- function(real, data, record_list, authors=NULL, cartographers=NULL, p
             # source("R/tag_builders/caption.R") # WRITE ME
             # source("R/tag_builders/cartographer.R") # WRITE ME
             # source("R/tag_builders/date.R") # WRITE ME
-            # source("R/tag_builders/secondary_title.R")
             # source("R/tag_builders/number.R") # WRITE ME
             
             #----- assign static assets
@@ -132,10 +131,6 @@ getBook <- function(real, data, record_list, authors=NULL, cartographers=NULL, p
             # # NEED TO WRITE THIS
             # real <- getDate(real, data)
             # # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # 
-            # #----- <secondary-title> i.e., series title
-            # real <- getSecondaryTitle(real, data)
-            # 
             # #----- <number>
             # # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             # # NEED TO WRITE THIS
