@@ -29,31 +29,32 @@ getBook <- function(real, data, record_list, authors=NULL, cartographers=NULL, p
             source("R/tag_builders/pages.R")
             # source("R/tag_builders/pdf_urls.R") # WRITE ME
             # source("R/tag_builders/photographer.R") # WRITE ME
-            # source("R/tag_builders/ppv_rev.R") # WRITE ME
+            # source("R/tag_builders/ppv_rev.R") # WRITE ME # "Is this photograph in the public domain?"
             # source("R/tag_builders/caption.R") # WRITE ME
             # source("R/tag_builders/cartographer.R") # WRITE ME
             # source("R/tag_builders/date.R") # WRITE ME
             # source("R/tag_builders/secondary_title.R")
             # source("R/tag_builders/number.R") # WRITE ME
             
-            #----- assign static assets for testing
-            # data <- record_list$Book$data
-            # if("author_list" %in% names(record_list$Book)){
-            #     authors <- record_list$Book$author_list
-            # }
-            # if("cartographer_list" %in% names(record_list$Book)){
-            #     cartographers <- record_list$Book$cartographer_list
-            # }
-            # if("photographer_list" %in% names(record_list$Book)){
-            #     photographers <- record_list$Book$photographer_list
-            # }
-            # if("editor_list" %in% names(record_list$Book)){
-            #     editors <- record_list$Book$editor_list
-            # }
-            # if("series_editor_list" %in% names(record_list$Book)){
-            #     series_editors <- record_list$Book$series_editor_list
-            # }
-            
+            #----- assign static assets
+            # send the names we parsed in `validateAuthors.R` to the getter functions along their `data`
+            if(nrow(data)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
+                if("author_list" %in% names(record_list$Book)){
+                    authors <- record_list$Book$author_list
+                }
+                if("cartographer_list" %in% names(record_list$Book)){
+                    cartographers <- record_list$Book$cartographer_list
+                }
+                if("photographer_list" %in% names(record_list$Book)){
+                    photographers <- record_list$Book$photographer_list
+                }
+                if("editor_list" %in% names(record_list$Book)){
+                    editors <- record_list$Book$editor_list
+                }
+                if("series_editor_list" %in% names(record_list$Book)){
+                    series_editors <- record_list$Book$series_editor_list
+                }
+            }
             # 4.3. nest a level-2 child node inside level-1 node
             l1 <- xml2::xml_children(real) # define what the level-1 tags are
             #----- <record>
@@ -108,7 +109,7 @@ getBook <- function(real, data, record_list, authors=NULL, cartographers=NULL, p
             # if(!is.null(editors)){
             #     real <- getPhotographers(real, data, photographers)
             # }
-            # #----- <ppv-rev>
+            # #----- <ppv-rev> # "Is this photograph in the public domain?"
             # # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             # # NEED TO WRITE THIS
             # real <- getPpvRev(real, data)

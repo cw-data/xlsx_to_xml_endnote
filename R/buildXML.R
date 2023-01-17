@@ -47,31 +47,14 @@ buildXML <- function(record_list, write){
                         break # stop the program
                         # because the program builds xml one ref-type at a time in the following steps
                     }
-                    # send the names we parsed in `validateAuthors.R` to the getter functions along their `data`
-                    if(nrow(data)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
-                        if("author_list" %in% names(record_list[[i]])){
-                            authors <- record_list[[i]]$author_list
-                        }
-                        if("cartographer_list" %in% names(record_list[[i]])){
-                            cartographers <- record_list[[i]]$cartographer_list
-                        }
-                        if("photographer_list" %in% names(record_list[[i]])){
-                            photographers <- record_list[[i]]$photographer_list
-                        }
-                        if("editor_list" %in% names(record_list[[i]])){
-                            editors <- record_list[[i]]$editor_list
-                        }
-                        if("series_editor_list" %in% names(record_list[[i]])){
-                            series_editors <- record_list[[i]]$series_editor_list
-                        }
-                    }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Book")){ # if the ref-type is "Book"
                             real <- getBook(real, data, record_list) # call the function that builds xml for books
                         }
                     }
                 }
-                #----- format output as string
+                
+                #----- send output to console and save to global environment
                 assign("xml_output", real, envir = globalenv()) # save output to global environment so user can see it
                 cat(as.character(xml2::as_xml_document(real))) # print output to console for user
                 
