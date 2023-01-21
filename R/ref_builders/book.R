@@ -3,30 +3,30 @@
 #--- a module for `main.R` that creates xml from forms xlsx data -------------------------
 #-----------------------------------------------------------------------------------------
 
-getBook <- function(real, data, record_list, authors=NULL, cartographers=NULL, photographers=NULL, editors=NULL, series_editors=NULL){
+getBook <- function(real, data, record_list){
     tryCatch(
         expr = {
             #----- load project functions
-            source("R/tag_builders/ref_type.R")
-            source("R/tag_builders/ref_type_name.R")
-            source("R/tag_builders/title.R")
-            source("R/tag_builders/author.R")
-            source("R/tag_builders/year.R")
-            source("R/tag_builders/edition.R")
-            source("R/tag_builders/editor.R")
-            source("R/tag_builders/num_vols.R")
-            source("R/tag_builders/secondary_volume.R")
-            source("R/tag_builders/pub_location.R")
-            source("R/tag_builders/publisher.R")
-            source("R/tag_builders/volume.R")
-            source("R/tag_builders/series_editor.R")
-            source("R/tag_builders/tertiary_title.R")
-            source("R/tag_builders/pdf_urls.R")
-            source("R/tag_builders/location.R")
-            source("R/tag_builders/research_notes.R")
-            source("R/tag_builders/cover_type.R")
-            source("R/tag_builders/related_urls.R")
-            source("R/tag_builders/pages.R")
+            source("R/tag_builders/ref_type.R") # 1
+            source("R/tag_builders/ref_type_name.R") # 2
+            source("R/tag_builders/title.R") # 3
+            source("R/tag_builders/author.R") # 4
+            source("R/tag_builders/year.R") # 5
+            source("R/tag_builders/edition.R") # 6
+            source("R/tag_builders/editor.R") # 7
+            source("R/tag_builders/num_vols.R") # 8
+            source("R/tag_builders/secondary_volume.R") # 9
+            source("R/tag_builders/pub_location.R") # 10
+            source("R/tag_builders/publisher.R") # 11
+            source("R/tag_builders/volume.R") # 12
+            source("R/tag_builders/series_editor.R") # 13
+            source("R/tag_builders/tertiary_title.R") # 14
+            source("R/tag_builders/pdf_urls.R") # 15
+            source("R/tag_builders/location.R") # 16
+            source("R/tag_builders/research_notes.R") # 17
+            source("R/tag_builders/cover_type.R") # 18
+            source("R/tag_builders/related_urls.R") # 19
+            source("R/tag_builders/pages.R") # 20
             # source("R/tag_builders/pdf_urls.R") # WRITE ME
             # source("R/tag_builders/photographer.R") # WRITE ME
             # source("R/tag_builders/ppv_rev.R") # WRITE ME # "Is this photograph in the public domain?"
@@ -36,6 +36,7 @@ getBook <- function(real, data, record_list, authors=NULL, cartographers=NULL, p
             # source("R/tag_builders/number.R") # WRITE ME
             
             #----- assign static assets
+            data <- record_list$Book$data
             # send the names we parsed in `validateAuthors.R` to the getter functions along their `data`
             if(nrow(data)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
                 if("author_list" %in% names(record_list$Book)){
@@ -52,6 +53,9 @@ getBook <- function(real, data, record_list, authors=NULL, cartographers=NULL, p
                 }
                 if("series_editor_list" %in% names(record_list$Book)){
                     series_editors <- record_list$Book$series_editor_list
+                }
+                if("cover_type_list" %in% names(record_list$Book)){
+                    cover_types <- record_list$Book$cover_type_list
                 }
             }
             # 4.3. nest a level-2 child node inside level-1 node
@@ -98,49 +102,13 @@ getBook <- function(real, data, record_list, authors=NULL, cartographers=NULL, p
             #----- <research-notes>
             real <- getResearchNotes(real, data)
             #----- <custom7> i.e., `cover-type`
-            real <- getCoverType(real, data)
+            if(!is.na(data$`cover-type`)){
+                real <- getCoverType(real, data, cover_types)
+            }
             #----- <related-urls>
             real <- getRelatedUrls(real, data)
             #----- <pages>
             real <- getPages(real, data)
-            
-            # #----- <photographer>
-            # if(!is.null(editors)){
-            #     real <- getPhotographers(real, data, photographers)
-            # }
-            # #----- <ppv-rev> # "Is this photograph in the public domain?"
-            # # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # # NEED TO WRITE THIS
-            # real <- getPpvRev(real, data)
-            # # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # 
-            # #----- <caption>
-            # # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # # NEED TO WRITE THIS
-            # real <- getCaption(real, data)
-            # # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # 
-            # #----- <cartographer>
-            # # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # # NEED TO WRITE THIS
-            # real <- getCartographer(real, data, cartographers)
-            # # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # 
-            # #----- <date>
-            # # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # # NEED TO WRITE THIS
-            # real <- getDate(real, data)
-            # # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # #----- <number>
-            # # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # # NEED TO WRITE THIS
-            # real <- getNumber(real, data)
-            # # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # 
-            # if("secondary-title" %in% colnames(data)){
-            #     real <- getSecondaryTitle(real, data)
-            # }
-            # assign("xml_output", real, envir = globalenv())
             # cat(as.character(xml2::as_xml_document(real))) # sanity check, print to console
             return(real)
         },
