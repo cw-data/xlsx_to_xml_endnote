@@ -76,7 +76,7 @@ Where did the research take place/what is the location of the reference?7,locati
 Reference description5,research-notes,conference_paper
 Cover and/or forest type7,cover-type,conference_paper
 Stable URL or DOI7,related-urls,conference_paper
-Session,number,conference_paper
+Session,edition,conference_paper
 Paper Number,section,conference_paper
 Editor,editor,conference_paper
 Conference name,secondary-title,conference_paper
