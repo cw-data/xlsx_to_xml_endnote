@@ -1,4 +1,4 @@
-#----- <series-editor>
+#----- <secondary-author> i.e., series editor
 getSeriesEditors <- function(real, data, series_editors){
     l1 <- xml2::xml_children(real)
     l2 <- xml2::xml_children(l1)

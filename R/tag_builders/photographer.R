@@ -7,16 +7,16 @@ getPhotographer <- function(real, data, photographers){
     l5 <- xml2::xml_children(l4)
     l6 <- xml2::xml_children(l5)
     for(i in 1:nrow(data)){
-        if (!is.na(data$editor[i])){
+        if (!is.na(data$photographer[i])){
             l3 <- xml2::xml_children(l2)
             xml_add_child(l3[2], "tertiary-authors") # confirmed data/20230104/Book_example.xml
             l4 <- xml2::xml_children(l3)
-            for(j in 1:length(authors[[i]])){
+            for(j in 1:length(photographers[[i]][[1]])){
                 xml_add_child(l4[length(l4)], "author")
                 l5 <- xml2::xml_children(l4)
                 xml_set_attr(l5[length(l5)], "role", "photographer")
                 l6 <- xml2::xml_children(l5)
-                xml_add_child(l5[length(l5)], "style", photographers[[i]][[j]])
+                xml_add_child(l5[length(l5)], "style", photographers[[i]][[1]][[j]])
             }
         }
     }
