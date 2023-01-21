@@ -35,33 +35,44 @@ validateAuthors <- function(forms_spreadsheet, ref_type_lookup){
                 # authors
                 if("author" %in% colnames(record_list[[i]]$data)){ # if there's an $author column
                     if(length(record_list[[i]]$data$author > 0)){ # and there is at least one entry there
-                        record_list[[i]]$author_list <- trimws( # trim any leading or trailing white space (spaces, tabs, etc.)
+                        record_list[[i]]$author_list <- 
                             stringr::str_split(record_list[[i]]$data$author, "\r\n") # split the string at each newline character
-                        )
                     }
-                } else if("cartographer" %in% colnames(record_list[[i]]$data)){
+                }
+                if("cartographer" %in% colnames(record_list[[i]]$data)){
                     if(length(record_list[[i]]$data$cartographer > 0)){
-                        record_list[[i]]$cartographer_list <- trimws(
+                        record_list[[i]]$cartographer_list <-
                             stringr::str_split(record_list[[i]]$data$cartographer, "\r\n")
-                        )
                     }
-                } else if("photographer" %in% colnames(record_list[[i]]$data)){
+                }
+                if("photographer" %in% colnames(record_list[[i]]$data)){
                     if(length(record_list[[i]]$data$photographer > 0)){
-                        record_list[[i]]$photographer_list <- trimws(
+                        record_list[[i]]$photographer_list <-
                             stringr::str_split(record_list[[i]]$data$photographer, "\r\n")
-                        )
                     }
-                } else if("editor" %in% colnames(record_list[[i]]$data)){
+                }
+                if("editor" %in% colnames(record_list[[i]]$data)){
                     if(length(record_list[[i]]$data$editor > 0)){
-                        record_list[[i]]$editor_list <- trimws(
+                        record_list[[i]]$editor_list <-
                             stringr::str_split(record_list[[i]]$data$editor, "\r\n")
-                            )
                     }
-                } else if("series-editor" %in% colnames(record_list[[i]]$data)){
+                }
+                if("series-editor" %in% colnames(record_list[[i]]$data)){
                     if(length(record_list[[i]]$data$`series-editor` > 0)){
-                        record_list[[i]]$series_editor_list <- trimws(
+                        record_list[[i]]$series_editor_list <-
                             stringr::str_split(record_list[[i]]$data$`series-editor`, "\r\n")
-                            )
+                    }
+                }
+                if("cover-type" %in% colnames(record_list[[i]]$data)){
+                    if(length(record_list[[i]]$data$`cover-type` > 0)){
+                        record_list[[i]]$cover_type_list <-
+                            stringr::str_split(record_list[[i]]$data$`cover-type`, "\r\n")
+                    }
+                }
+                if("tertiary-author" %in% colnames(record_list[[i]]$data)){
+                    if(length(record_list[[i]]$data$`tertiary-author` > 0)){
+                        record_list[[i]]$tertiary_author_list <-
+                            stringr::str_split(record_list[[i]]$data$`tertiary-author`, "\r\n")
                     }
                 }
             }
