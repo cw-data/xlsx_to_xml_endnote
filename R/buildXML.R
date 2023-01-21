@@ -15,17 +15,16 @@ buildXML <- function(record_list, write){
                 
                 #----- load project functions
                 source("R/ref_builders/book.R")
-                source("R/ref_builders/fsPub.R")
+                source("R/ref_builders/fs_pub.R")
                 source("R/ref_builders/journal.R")
-                # source("R/ref_builders/govDoc.R")
-                # source("R/ref_builders/thesis.R")
-                # source("R/ref_builders/map.R")
-                # source("R/ref_builders/bookSection.R")
-                # source("R/ref_builders/confPaper.R")
-                # source("R/ref_builders/photo.R")
-                # source("R/ref_builders/website.R")
-                # source("R/ref_builders/newspaper.R")
-                # source("R/ref_builders/confProceed.R")
+                source("R/ref_builders/thesis.R")
+                source("R/ref_builders/map.R")
+                source("R/ref_builders/book_section.R")
+                source("R/ref_builders/conf_paper.R")
+                source("R/ref_builders/photo.R")
+                source("R/ref_builders/website.R")
+                source("R/ref_builders/newspaper.R")
+                source("R/ref_builders/conf_proceedings.R")
                 
                 #----- start an empty xml doc
                 if(nrow(forms_spreadsheet>0)){
@@ -59,12 +58,12 @@ buildXML <- function(record_list, write){
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Unpublished report (e.g., establishment or progress report)")){ # if the ref-type is "Book"
-                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                            real <- getFSPub(real, data, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Government document (other than FS publications)")){ # if the ref-type is "Book"
-                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                            real <- getFSPub(real, data, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
@@ -74,17 +73,17 @@ buildXML <- function(record_list, write){
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Book section")){ # if the ref-type is "Book"
-                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                            real <- getBookSection(real, data, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Conference proceedings")){ # if the ref-type is "Book"
-                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                            real <- getNConfProceed(real, data, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Conference paper")){ # if the ref-type is "Book"
-                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                            real <- getConferencePaper(real, data, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
@@ -94,22 +93,22 @@ buildXML <- function(record_list, write){
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Photograph")){ # if the ref-type is "Book"
-                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                            real <- getPhoto(real, data, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
-                        if(unique(data$`ref-type`=="Map")){ # if the ref-type is "Book"
-                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                        if(unique(data$`ref-type`=="Map")){ # if the ref-type is "Map"
+                            real <- getMap(real, data, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Newspaper article")){ # if the ref-type is "Book"
-                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                            real <- getNewspaper(real, data, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Online reference/website")){ # if the ref-type is "Book"
-                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                            real <- getWebsite(real, data, record_list) # call the function that builds xml for books
                         }
                     }
                 }
