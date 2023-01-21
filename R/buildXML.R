@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------------------
-#---`buildXML.R` routes static assets (e.g., `record_list`)  to other getter functions----
+#---`buildXML.R` routes static assets (e.g., `record_list`) to other getter functions-----
 #--- a module for `main.R` that creates xml from forms xlsx data -------------------------
 #-----------------------------------------------------------------------------------------
 options(warn=-1)
@@ -14,18 +14,18 @@ buildXML <- function(record_list, write){
                 library(xml2)
                 
                 #----- load project functions
-                source("R/book.R")
-                # source("R/fsPub.R")
-                # source("R/journal.R")
-                # source("R/govDoc.R")
-                # source("R/thesis.R")
-                # source("R/map.R")
-                # source("R/bookSection.R")
-                # source("R/confPaper.R")
-                # source("R/photo.R")
-                # source("R/website.R")
-                # source("R/newspaper.R")
-                # source("R/confProceed.R")
+                source("R/ref_builders/book.R")
+                source("R/ref_builders/fsPub.R")
+                source("R/ref_builders/journal.R")
+                # source("R/ref_builders/govDoc.R")
+                # source("R/ref_builders/thesis.R")
+                # source("R/ref_builders/map.R")
+                # source("R/ref_builders/bookSection.R")
+                # source("R/ref_builders/confPaper.R")
+                # source("R/ref_builders/photo.R")
+                # source("R/ref_builders/website.R")
+                # source("R/ref_builders/newspaper.R")
+                # source("R/ref_builders/confProceed.R")
                 
                 #----- start an empty xml doc
                 if(nrow(forms_spreadsheet>0)){
@@ -48,7 +48,67 @@ buildXML <- function(record_list, write){
                         # because the program builds xml one ref-type at a time in the following steps
                     }
                     if(nrow(data>0)){
+                        if(unique(data$`ref-type`=="Journal article")){ # if the ref-type is "Book"
+                            real <- getJournal(real, data, record_list) # call the function that builds xml for books
+                        }
+                    }
+                    if(nrow(data>0)){
+                        if(unique(data$`ref-type`=="Forest Service publication (e.g., general technical report)")){ # if the ref-type is "Book"
+                            real <- getFSPub(real, data, record_list) # call the function that builds xml for books
+                        }
+                    }
+                    if(nrow(data>0)){
+                        if(unique(data$`ref-type`=="Unpublished report (e.g., establishment or progress report)")){ # if the ref-type is "Book"
+                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                        }
+                    }
+                    if(nrow(data>0)){
+                        if(unique(data$`ref-type`=="Government document (other than FS publications)")){ # if the ref-type is "Book"
+                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                        }
+                    }
+                    if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Book")){ # if the ref-type is "Book"
+                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                        }
+                    }
+                    if(nrow(data>0)){
+                        if(unique(data$`ref-type`=="Book section")){ # if the ref-type is "Book"
+                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                        }
+                    }
+                    if(nrow(data>0)){
+                        if(unique(data$`ref-type`=="Conference proceedings")){ # if the ref-type is "Book"
+                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                        }
+                    }
+                    if(nrow(data>0)){
+                        if(unique(data$`ref-type`=="Conference paper")){ # if the ref-type is "Book"
+                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                        }
+                    }
+                    if(nrow(data>0)){
+                        if(unique(data$`ref-type`=="Thesis/Dissertation")){ # if the ref-type is "Book"
+                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                        }
+                    }
+                    if(nrow(data>0)){
+                        if(unique(data$`ref-type`=="Photograph")){ # if the ref-type is "Book"
+                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                        }
+                    }
+                    if(nrow(data>0)){
+                        if(unique(data$`ref-type`=="Map")){ # if the ref-type is "Book"
+                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                        }
+                    }
+                    if(nrow(data>0)){
+                        if(unique(data$`ref-type`=="Newspaper article")){ # if the ref-type is "Book"
+                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                        }
+                    }
+                    if(nrow(data>0)){
+                        if(unique(data$`ref-type`=="Online reference/website")){ # if the ref-type is "Book"
                             real <- getBook(real, data, record_list) # call the function that builds xml for books
                         }
                     }
@@ -62,7 +122,7 @@ buildXML <- function(record_list, write){
                 #----- write output to file if `write` flag is TRUE
                 if(write==TRUE){
                     real <- stringr::str_remove_all(real, "(\n +|\n)") # remove newline characters because endnote doesn't like them
-                    real <- as.character(real) # set real as character for
+                    real <- as.character(real) # set real as character for output
                     data.table::fwrite(real, "data/xmlouttest.xml")
                 }
             }
