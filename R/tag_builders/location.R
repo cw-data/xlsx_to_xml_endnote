@@ -8,7 +8,7 @@ getLocation <- function(real, data){
     l6 <- xml2::xml_children(l5)
     for(i in 1:nrow(data)){
         if (!is.na(data$location[i])){
-            xml_add_child(l2[i], "modified-date")
+            xml_add_child(l2[length(l2)], "modified-date")
             l3 <- xml2::xml_children(l2)
             xml_add_child(l3[length(l3)], "style", data$location)
         }

@@ -9,7 +9,7 @@ getDate <- function(real, data){
     for(i in 1:nrow(data)){
         if (!is.na(data$`date`[i])){
             if (is.na(data$`year`[i])){
-                xml_add_child(l2[i], "dates")
+                xml_add_child(l2[length(l2)], "dates")
             }
             l3 <- xml2::xml_children(l2)
             xml_add_child(l3[length(l3)], "date") # pointing the index to length() adds sub-tags inside the most recently added tag of that level

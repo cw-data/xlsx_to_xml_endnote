@@ -8,7 +8,7 @@ getAuthor <- function(real, data, authors){
     l6 <- xml2::xml_children(l5)
     for(i in 1:nrow(data)){
         if (!is.na(data$author[i])){
-            xml_add_child(l2[i], "contributors")
+            xml_add_child(l2[length(l2)], "contributors")
             l3 <- xml2::xml_children(l2)
             xml_add_child(l3[length(l3)], "authors")
             l4 <- xml2::xml_children(l3)

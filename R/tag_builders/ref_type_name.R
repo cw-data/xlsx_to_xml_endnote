@@ -7,7 +7,7 @@ getRefTypeName <- function(real, data){
     l5 <- xml2::xml_children(l4)
     l6 <- xml2::xml_children(l5)
     for(i in 1:nrow(data)){
-        xml_set_attr(l3, "name", data$`ref-type`[i])
+        xml_set_attr(l3[length(l3)], "name", data$`ref-type`[i])
     }
     return(real)
 }

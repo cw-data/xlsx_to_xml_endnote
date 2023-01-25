@@ -8,7 +8,7 @@ getTitle <- function(real, data){
     l6 <- xml2::xml_children(l5)
     for(i in 1:nrow(data)){
         if (!is.na(data$title[i])){
-            xml_add_child(l2[i], "titles")
+            xml_add_child(l2[length(l2)], "titles")
             l3 <- xml2::xml_children(l2)
             xml_add_child(l3[length(l3)], "title")
             l4 <- xml2::xml_children(l3)
