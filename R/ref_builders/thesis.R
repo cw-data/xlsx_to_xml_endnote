@@ -35,7 +35,7 @@ getThesis <- function(real, data, record_list){
             # source("R/tag_builders/number.R") # WRITE ME
             
             #----- assign static assets
-            data <- record_list$`Thesis/Dissertation`$data
+            # data <- record_list$`Thesis/Dissertation`$data
             # send the names we parsed in `validateAuthors.R` to the getter functions along their `data`
             if(nrow(data)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
                 if("author_list" %in% names(record_list$`Thesis/Dissertation`)){

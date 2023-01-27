@@ -1,10 +1,10 @@
 #-----------------------------------------------------------------------------------------
-#---`fsPub.R` is a getter function that creates xml for fsPub records from `record_list` -
-#--- fsPub == "Forest Service publication (e.g., general technical report)"---------------
+#---`un_pub.R` is a getter function that creates xml for un_pub records from `record_list` -
+#--- un_pub == "Unpublished report (e.g., establishment or progress report)"---------------
 #--- a module for `main.R` that creates xml from forms xlsx data -------------------------
 #-----------------------------------------------------------------------------------------
 
-getFSPub <- function(real, record_list){
+getUnPub <- function(real, record_list){
     tryCatch(
         expr = {
             #----- load project functions
@@ -40,29 +40,29 @@ getFSPub <- function(real, record_list){
             # source("R/tag_builders/date.R") # WRITE ME
             
             #----- assign static assets
-            data <- record_list$`Forest Service publication (e.g., general technical report)`$data
+            data <- record_list$`Unpublished report (e.g., establishment or progress report)`$data
             # send the names we parsed in `validateAuthors.R` to the getter functions along their `data`
             if(nrow(data)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
-                if("author_list" %in% names(record_list$`Forest Service publication (e.g., general technical report)`)){
-                    authors <- list(record_list$`Forest Service publication (e.g., general technical report)`$author_list)
+                if("author_list" %in% names(record_list$`Unpublished report (e.g., establishment or progress report)`)){
+                    authors <- list(record_list$`Unpublished report (e.g., establishment or progress report)`$author_list)
                 }
-                if("cartographer_list" %in% names(record_list$`Forest Service publication (e.g., general technical report)`)){
-                    cartographers <- record_list$`Forest Service publication (e.g., general technical report)`$cartographer_list
+                if("cartographer_list" %in% names(record_list$`Unpublished report (e.g., establishment or progress report)`)){
+                    cartographers <- record_list$`Unpublished report (e.g., establishment or progress report)`$cartographer_list
                 }
-                if("photographer_list" %in% names(record_list$`Forest Service publication (e.g., general technical report)`)){
-                    photographers <- record_list$`Forest Service publication (e.g., general technical report)`$photographer_list
+                if("photographer_list" %in% names(record_list$`Unpublished report (e.g., establishment or progress report)`)){
+                    photographers <- record_list$`Unpublished report (e.g., establishment or progress report)`$photographer_list
                 }
-                if("editor_list" %in% names(record_list$`Forest Service publication (e.g., general technical report)`)){
-                    editors <- record_list$`Forest Service publication (e.g., general technical report)`$editor_list
+                if("editor_list" %in% names(record_list$`Unpublished report (e.g., establishment or progress report)`)){
+                    editors <- record_list$`Unpublished report (e.g., establishment or progress report)`$editor_list
                 }
-                if("series_editor_list" %in% names(record_list$`Forest Service publication (e.g., general technical report)`)){
-                    series_editors <- record_list$`Forest Service publication (e.g., general technical report)`$series_editor_list
+                if("series_editor_list" %in% names(record_list$`Unpublished report (e.g., establishment or progress report)`)){
+                    series_editors <- record_list$`Unpublished report (e.g., establishment or progress report)`$series_editor_list
                 }
-                if("cover_type_list" %in% names(record_list$`Forest Service publication (e.g., general technical report)`)){
-                    cover_types <- record_list$`Forest Service publication (e.g., general technical report)`$cover_type_list
+                if("cover_type_list" %in% names(record_list$`Unpublished report (e.g., establishment or progress report)`)){
+                    cover_types <- record_list$`Unpublished report (e.g., establishment or progress report)`$cover_type_list
                 }
-                if("tertiary_author_list" %in% names(record_list$`Forest Service publication (e.g., general technical report)`)){
-                    tertiary_authors <- record_list$`Forest Service publication (e.g., general technical report)`$tertiary_author_list
+                if("tertiary_author_list" %in% names(record_list$`Unpublished report (e.g., establishment or progress report)`)){
+                    tertiary_authors <- record_list$`Unpublished report (e.g., establishment or progress report)`$tertiary_author_list
                 }
             }
             # 4.3. nest a level-2 child node inside level-1 node
@@ -100,7 +100,7 @@ getFSPub <- function(real, record_list){
             real <- getNumber(real, data)
             #----- <pages>
             real <- getPages(real, data)
-            #----- <tertiary-author> i.e., 'publisher' for fspub, unpublished report, other gov report
+            #----- <tertiary-author> i.e., 'publisher' for un_pub, unpublished report, other gov report
             if(!is.na(data$`tertiary-author`)){
                 real <- getTertiaryAuthors(real, data, tertiary_authors)
             }
@@ -122,7 +122,7 @@ getFSPub <- function(real, record_list){
             return(real)
         },
         finally = {
-            message("XML built successfully for `Forest Service publication (e.g., general technical report)` references...\n")
+            message("XML built successfully for `Unpublished report (e.g., establishment or progress report)` references...\n")
         }
     )
 }

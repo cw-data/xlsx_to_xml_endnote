@@ -16,6 +16,8 @@ buildXML <- function(record_list, write){
                 #----- load project functions
                 source("R/ref_builders/book.R")
                 source("R/ref_builders/fs_pub.R")
+                source("R/ref_builders/gov_doc.R")
+                source("R/ref_builders/un_pub.R")
                 source("R/ref_builders/journal.R")
                 source("R/ref_builders/thesis.R")
                 source("R/ref_builders/map.R")
@@ -43,86 +45,89 @@ buildXML <- function(record_list, write){
                     data <- record_list[[i]]$data
                     # double-check that `loadData()` worked correctly:
                     if(length(unique(data$`ref-type`))>1){ # if `loadData()` didn't subset data into `ref-type` subsets
+                        print("more than one data type")
                         break # stop the program
                         # because the program builds xml one ref-type at a time in the following steps
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Journal article")){ # if the ref-type is "Book"
-                            real <- getJournal(real, data, record_list) # call the function that builds xml for books
+                            real <- getJournal(real, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Forest Service publication (e.g., general technical report)")){ # if the ref-type is "Book"
-                            real <- getFSPub(real, data, record_list) # call the function that builds xml for books
+                            real <- getFSPub(real,record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Unpublished report (e.g., establishment or progress report)")){ # if the ref-type is "Book"
-                            real <- getFSPub(real, data, record_list) # call the function that builds xml for books
+                            real <- getUnPub(real, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Government document (other than FS publications)")){ # if the ref-type is "Book"
-                            real <- getFSPub(real, data, record_list) # call the function that builds xml for books
+                            real <- getGovDoc(real, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Book")){ # if the ref-type is "Book"
-                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                            real <- getBook(real, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Book section")){ # if the ref-type is "Book"
-                            real <- getBookSection(real, data, record_list) # call the function that builds xml for books
+                            real <- getBookSection(real, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Conference proceedings")){ # if the ref-type is "Book"
-                            real <- getNConfProceed(real, data, record_list) # call the function that builds xml for books
+                            real <- getConfProceed(real, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Conference paper")){ # if the ref-type is "Book"
-                            real <- getConferencePaper(real, data, record_list) # call the function that builds xml for books
+                            real <- getConferencePaper(real, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Thesis/Dissertation")){ # if the ref-type is "Book"
-                            real <- getBook(real, data, record_list) # call the function that builds xml for books
+                            real <- getBook(real, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Photograph")){ # if the ref-type is "Book"
-                            real <- getPhoto(real, data, record_list) # call the function that builds xml for books
+                            real <- getPhoto(real, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Map")){ # if the ref-type is "Map"
-                            real <- getMap(real, data, record_list) # call the function that builds xml for books
+                            real <- getMap(real, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Newspaper article")){ # if the ref-type is "Book"
-                            real <- getNewspaper(real, data, record_list) # call the function that builds xml for books
+                            real <- getNewspaper(real, record_list) # call the function that builds xml for books
                         }
                     }
                     if(nrow(data>0)){
                         if(unique(data$`ref-type`=="Online reference/website")){ # if the ref-type is "Book"
-                            real <- getWebsite(real, data, record_list) # call the function that builds xml for books
+                            real <- getWebsite(real, record_list) # call the function that builds xml for books
                         }
                     }
                 }
                 
+                
                 #----- send output to console and save to global environment
                 assign("xml_output", real, envir = globalenv()) # save output to global environment so user can see it
                 cat(as.character(xml2::as_xml_document(real))) # print output to console for user
-                
+                message("`forms_spreadsheet` parsed to XML...\XML printed to console for review...\n")
                 
                 #----- write output to file if `write` flag is TRUE
                 if(write==TRUE){
                     real <- stringr::str_remove_all(real, "(\n +|\n)") # remove newline characters because endnote doesn't like them
                     real <- as.character(real) # set real as character for output
                     data.table::fwrite(real, "data/xmlouttest.xml")
+                    message("`forms_spreadsheet` parsed to XML...\nOutput saved to file...\n")
                 }
             }
         }

@@ -3,7 +3,7 @@
 #--- a module for `main.R` that creates xml from forms xlsx data ------------------------------------------
 #----------------------------------------------------------------------------------------------------------
 
-getMap <- function(real, data, record_list){
+getMap <- function(real, record_list){
     tryCatch(
         expr = {
             #----- load project functions

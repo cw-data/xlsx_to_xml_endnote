@@ -3,7 +3,7 @@
 #--- a module for `main.R` that creates xml from forms xlsx data ------------------------------------------
 #----------------------------------------------------------------------------------------------------------
 
-getConferencePaper <- function(real, data, record_list){
+getConferencePaper <- function(real, record_list){
     tryCatch(
         expr = {
             #----- load project functions

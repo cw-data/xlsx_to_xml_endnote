@@ -3,7 +3,7 @@
 #--- a module for `main.R` that creates xml from forms xlsx data ------------------------------------------
 #----------------------------------------------------------------------------------------------------------
 
-getPhoto <- function(real, data, record_list){
+getPhoto <- function(real, record_list){
     tryCatch(
         expr = {
             #----- load project functions

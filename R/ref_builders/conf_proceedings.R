@@ -3,7 +3,7 @@
 #--- a module for `main.R` that creates xml from forms xlsx data -------------------------
 #-----------------------------------------------------------------------------------------
 
-getNConfProceed <- function(real, data, record_list){
+getConfProceed <- function(real, record_list){
     tryCatch(
         expr = {
             #----- load project functions
@@ -17,11 +17,11 @@ getNConfProceed <- function(real, data, record_list){
             source("R/tag_builders/research_notes.R") # 17
             source("R/tag_builders/cover_type.R") # 19
             source("R/tag_builders/related_urls.R") # 20
-            source("R/tag_builders/pub_location.R") # 8
             source("R/tag_builders/num_vols.R") # 8
             source("R/tag_builders/series_editor.R") # 6
             source("R/tag_builders/tertiary_title.R") # 7
             source("R/tag_builders/edition.R") # 7
+            # source("R/tag_builders/pub_location.R") # 8
             # source("R/tag_builders/secondary_volume.R") # 11
             # source("R/tag_builders/number.R") # 12
             # source("R/tag_builders/tertiary_author.R") # 14
@@ -81,9 +81,6 @@ getNConfProceed <- function(real, data, record_list){
             real <- getYear(real, data)
             #----- <pdf-urls>
             real <- getPdfUrls(real, data)
-            #-----  <secondary-title>
-            getSecondaryTitle <- function(real, data)
-            
             #----- <modified-date> `location`
             real <- getLocation(real, data)
             #----- <research-notes>
@@ -94,18 +91,14 @@ getNConfProceed <- function(real, data, record_list){
             }
             #----- <related-urls>
             real <- getRelatedUrls(real, data)
-            #----- <pub-location>
-            real <- getPubLocation(real, data)
-            #----- <publisher>
-            real <- getPublisher(real, data)
-            #----- <pages>
-            real <- getPages(real, data)
-            #----- <volume>
-            real <- getVolume(real, data)
+            #----- <num-vols>
+            real <- getNumVols(real, data)
+            #----- <secondary-author> i.e., series editor
+            real <- getSeriesEditors(real, data, series_editors)
+            #----- <tertiary-title>
+            real <- getTertiaryTitle(real, data)
             #----- <edition>
             real <- getEdition(real, data)
-            #----- <section>
-            real <- getSection(real, data)
             # cat(as.character(xml2::as_xml_document(real))) # sanity check, print to console
             return(real)
         },

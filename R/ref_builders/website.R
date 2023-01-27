@@ -3,7 +3,7 @@
 #--- a module for `main.R` that creates xml from forms xlsx data -------------------------
 #-----------------------------------------------------------------------------------------
 
-getWebsite <- function(real, data, record_list){
+getWebsite <- function(real, record_list){
     tryCatch(
         expr = {
             #----- load project functions
