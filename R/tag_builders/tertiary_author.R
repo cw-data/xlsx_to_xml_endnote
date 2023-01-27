@@ -9,7 +9,7 @@ getTertiaryAuthors <- function(real, data, tertiary_authors){
     for(i in 1:nrow(data)){
         if (!is.na(data$`series-editor`[i])){
             l3 <- xml2::xml_children(l2)
-            xml_add_child(l3[2], "tertiary-authors") # confirmed data/20230104/Book_example.xml
+            xml_add_child(l3[length(l3)], "tertiary-authors") # confirmed data/20230104/Book_example.xml
             l4 <- xml2::xml_children(l3)
             for(j in 1:length(authors[[i]])){
                 xml_add_child(l4[length(l4)], "author")
