@@ -37,9 +37,9 @@ getJournal <- function(real, record_list){
             # source("R/tag_builders/date.R") # WRITE ME
             
             #----- assign static assets
-            data <- record_list$`Journal article`$data
+            dataset <- record_list$`Journal article`$data
             # send the names we parsed in `validateAuthors.R` to the getter functions along their `data`
-            if(nrow(data)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
+            if(nrow(dataset)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
                 if("author_list" %in% names(record_list$`Journal article`)){
                     authors <- list(record_list$`Journal article`$author_list)
                 }
@@ -59,43 +59,46 @@ getJournal <- function(real, record_list){
                     cover_types <- record_list$`Journal article`$cover_type_list
                 }
             }
-            # 4.3. nest a level-2 child node inside level-1 node
-            l1 <- xml2::xml_children(real) # define what the level-1 tags are
+            
             #----- <record>
-            for(row in 1:nrow(data)){ # loop that adds one <record> tag for each row in `data`
+            for(row in 1:nrow(dataset)){ # loop that adds one <record> tag for each row in `data`
+                data <- dataset[row,]
+                # 4.3. nest a level-2 child node inside level-1 node
+                l1 <- xml2::xml_children(real) # define what the level-1 tags are
                 xml_add_child(l1, "record")
+                #-----  <ref-type>
+                real <- getRefType(real, data)
+                real <- getRefTypeName(real, data)
+                #----- <title>
+                real <- getTitle(real, data)
+                #----- <author>
+                if(!is.na(data$author)){
+                    real <- getAuthor(real, data, authors, row)
+                }
+                #----- <year>
+                real <- getYear(real, data)
+                #----- <secondary-title>
+                real <- getSecondaryTitle(real, data)
+                #----- <volume>
+                real <- getVolume(real, data)
+                #----- <number>
+                real <- getNumber(real, data)
+                #----- <pages>
+                real <- getPages(real, data)
+                #----- <pdf-urls>
+                real <- getPdfUrls(real, data)
+                #----- <modified-date> `location`
+                real <- getLocation(real, data)
+                #----- <research-notes>
+                real <- getResearchNotes(real, data)
+                #----- <custom7> i.e., `cover-type`
+                if(!is.na(data$`cover-type`)){
+                    real <- getCoverType(real, data, cover_types, row)
+                }
+                #----- <related-urls>
+                real <- getRelatedUrls(real, data)
             }
-            #-----  <ref-type>
-            real <- getRefType(real, data)
-            real <- getRefTypeName(real, data)
-            #----- <title>
-            real <- getTitle(real, data)
-            #----- <author>
-            if(!is.na(data$author)){
-                real <- getAuthor(real, data, authors)
-            }
-            #----- <year>
-            real <- getYear(real, data)
-            #----- <secondary-title>
-            real <- getSecondaryTitle(real, data)
-            #----- <volume>
-            real <- getVolume(real, data)
-            #----- <number>
-            real <- getNumber(real, data)
-            #----- <pages>
-            real <- getPages(real, data)
-            #----- <pdf-urls>
-            real <- getPdfUrls(real, data)
-            #----- <modified-date> `location`
-            real <- getLocation(real, data)
-            #----- <research-notes>
-            real <- getResearchNotes(real, data)
-            #----- <custom7> i.e., `cover-type`
-            if(!is.na(data$`cover-type`)){
-                real <- getCoverType(real, data, cover_types)
-            }
-            #----- <related-urls>
-            real <- getRelatedUrls(real, data)
+            
             # cat(as.character(xml2::as_xml_document(real))) # sanity check, print to console
             return(real)
         },

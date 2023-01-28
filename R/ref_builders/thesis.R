@@ -57,45 +57,50 @@ getThesis <- function(real, data, record_list){
                     cover_types <- record_list$`Thesis/Dissertation`$cover_type_list
                 }
             }
-            # 4.3. nest a level-2 child node inside level-1 node
-            l1 <- xml2::xml_children(real) # define what the level-1 tags are
-            #----- <record>
-            for(row in 1:nrow(data)){ # loop that adds one <record> tag for each row in `data`
-                xml_add_child(l1, "record")
+            
+            for(row in 1:nrow(dataset)){
+                data <- dataset[row,]
+                # 4.3. nest a level-2 child node inside level-1 node
+                l1 <- xml2::xml_children(real) # define what the level-1 tags are
+                #----- <record>
+                for(row in 1:nrow(data)){ # loop that adds one <record> tag for each row in `data`
+                    xml_add_child(l1, "record")
+                }
+                #-----  <ref-type>
+                real <- getRefType(real, data)
+                real <- getRefTypeName(real, data)
+                #----- <title>
+                real <- getTitle(real, data)
+                #----- <author>
+                if(!is.na(data$author)){
+                    real <- getAuthor(real, data, authors, row)
+                }
+                #----- <year>
+                real <- getYear(real, data)
+                #----- <pdf-urls>
+                real <- getPdfUrls(real, data)
+                #----- <modified-date> `location`
+                real <- getLocation(real, data)
+                #----- <research-notes>
+                real <- getResearchNotes(real, data)
+                #----- <custom7> i.e., `cover-type`
+                if(!is.na(data$`cover-type`)){
+                    real <- getCoverType(real, data, cover_types, row)
+                }
+                #----- <related-urls>
+                real <- getRelatedUrls(real, data)
+                #----- <secondary-title>
+                real <- getSecondaryTitle(real, data)
+                #----- <publisher>
+                real <- getPublisher(real, data)
+                #----- <volume>
+                real <- getVolume(real, data)
+                #----- <pub-location>
+                real <- getPubLocation(real, data)
+                #----- <pages>
+                real <- getPages(real, data)
             }
-            #-----  <ref-type>
-            real <- getRefType(real, data)
-            real <- getRefTypeName(real, data)
-            #----- <title>
-            real <- getTitle(real, data)
-            #----- <author>
-            if(!is.na(data$author)){
-                real <- getAuthor(real, data, authors)
-            }
-            #----- <year>
-            real <- getYear(real, data)
-            #----- <pdf-urls>
-            real <- getPdfUrls(real, data)
-            #----- <modified-date> `location`
-            real <- getLocation(real, data)
-            #----- <research-notes>
-            real <- getResearchNotes(real, data)
-            #----- <custom7> i.e., `cover-type`
-            if(!is.na(data$`cover-type`)){
-                real <- getCoverType(real, data, cover_types)
-            }
-            #----- <related-urls>
-            real <- getRelatedUrls(real, data)
-            #----- <secondary-title>
-            real <- getSecondaryTitle(real, data)
-            #----- <publisher>
-            real <- getPublisher(real, data)
-            #----- <volume>
-            real <- getVolume(real, data)
-            #----- <pub-location>
-            real <- getPubLocation(real, data)
-            #----- <pages>
-            real <- getPages(real, data)
+            
             # cat(as.character(xml2::as_xml_document(real))) # sanity check, print to console
             return(real)
         },
