@@ -1,5 +1,5 @@
 #----- <tertiary-author> i.e., 'publisher' for fspub, unpublished report, other gov report
-getTertiaryAuthors <- function(real, data, tertiary_authors){
+getTertiaryAuthors <- function(real, data, tertiary_authors, row){
     if (!is.na(data$`series-editor`)){
         l1 <- xml2::xml_children(real)
         l2 <- xml2::xml_children(l1)
