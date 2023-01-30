@@ -36,9 +36,9 @@ getBook <- function(real, record_list){
             # source("R/tag_builders/number.R") # WRITE ME
             
             #----- assign static assets
-            data <- record_list$Book$data
+            dataset <- record_list$Book$data
             # send the names we parsed in `validateAuthors.R` to the getter functions along their `data`
-            if(nrow(data)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
+            if(nrow(dataset)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
                 if("author_list" %in% names(record_list$Book)){
                     authors <- record_list$Book$author_list
                 }
@@ -58,57 +58,59 @@ getBook <- function(real, record_list){
                     cover_types <- record_list$Book$cover_type_list
                 }
             }
-            # 4.3. nest a level-2 child node inside level-1 node
-            l1 <- xml2::xml_children(real) # define what the level-1 tags are
-            #----- <record>
-            for(row in 1:nrow(data)){ # loop that adds one <record> tag for each row in `data`
+            for(row in 1:nrow(dataset)){
+                data <- dataset[row,]
+                # 4.3. nest a level-2 child node inside level-1 node
+                l1 <- xml2::xml_children(real) # define what the level-1 tags are
+                #----- <record>
                 xml_add_child(l1, "record")
+                #-----  <ref-type>
+                real <- getRefType(real, data)
+                real <- getRefTypeName(real, data)
+                #----- <title>
+                real <- getTitle(real, data)
+                #----- <author>
+                if(!is.na(data$author)){
+                    real <- getAuthor(real, data, authors, row)
+                }
+                #----- <year>
+                real <- getYear(real, data)
+                #----- <edition>
+                real <- getEdition(real, data)
+                #----- <editor>
+                if(!is.na(data$editor)){
+                    real <- getEditor(real, data, editors, row)
+                }
+                #----- <num-vols>
+                real <- getNumVols(real, data)
+                #----- <secondary-volume>
+                real <- getSecVol(real, data)
+                #----- <pub-location>
+                real <- getPubLocation(real, data)
+                #----- <publisher>
+                real <- getPublisher(real, data)
+                #----- <volume>
+                real <- getVolume(real, data)
+                #----- <series-editor>
+                real <- getSeriesEditors(real, data, series_editors, row)
+                #----- <tertiary-title>
+                real <- getTertiaryTitle(real, data)
+                #----- <pdf-urls>
+                real <- getPdfUrls(real, data)
+                #----- <modified-date> `location`
+                real <- getLocation(real, data)
+                #----- <research-notes>
+                real <- getResearchNotes(real, data)
+                #----- <custom7> i.e., `cover-type`
+                if(!is.na(data$`cover-type`)){
+                    real <- getCoverType(real, data, cover_types, row)
+                }
+                #----- <related-urls>
+                real <- getRelatedUrls(real, data)
+                #----- <pages>
+                real <- getPages(real, data)
             }
-            #-----  <ref-type>
-            real <- getRefType(real, data)
-            real <- getRefTypeName(real, data)
-            #----- <title>
-            real <- getTitle(real, data)
-            #----- <author>
-            if(!is.na(data$author)){
-                real <- getAuthor(real, data, authors)
-            }
-            #----- <year>
-            real <- getYear(real, data)
-            #----- <edition>
-            real <- getEdition(real, data)
-            #----- <editor>
-            if(!is.na(data$editor)){
-                real <- getEditor(real, data, editors)
-            }
-            #----- <num-vols>
-            real <- getNumVols(real, data)
-            #----- <secondary-volume>
-            real <- getSecVol(real, data)
-            #----- <pub-location>
-            real <- getPubLocation(real, data)
-            #----- <publisher>
-            real <- getPublisher(real, data)
-            #----- <volume>
-            real <- getVolume(real, data)
-            #----- <series-editor>
-            real <- getSeriesEditors(real, data, series_editors)
-            #----- <tertiary-title>
-            real <- getTertiaryTitle(real, data)
-            #----- <pdf-urls>
-            real <- getPdfUrls(real, data)
-            #----- <modified-date> `location`
-            real <- getLocation(real, data)
-            #----- <research-notes>
-            real <- getResearchNotes(real, data)
-            #----- <custom7> i.e., `cover-type`
-            if(!is.na(data$`cover-type`)){
-                real <- getCoverType(real, data, cover_types)
-            }
-            #----- <related-urls>
-            real <- getRelatedUrls(real, data)
-            #----- <pages>
-            real <- getPages(real, data)
+            
             # cat(as.character(xml2::as_xml_document(real))) # sanity check, print to console
             return(real)
         },

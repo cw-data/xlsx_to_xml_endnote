@@ -70,9 +70,7 @@ getGovDoc <- function(real, record_list){
                 # 4.3. nest a level-2 child node inside level-1 node
                 l1 <- xml2::xml_children(real) # define what the level-1 tags are
                 #----- <record>
-                for(row in 1:nrow(data)){ # loop that adds one <record> tag for each row in `data`
-                    xml_add_child(l1, "record")
-                }
+                xml_add_child(l1, "record")
                 #-----  <ref-type>
                 real <- getRefType(real, data)
                 real <- getRefTypeName(real, data)
@@ -80,13 +78,13 @@ getGovDoc <- function(real, record_list){
                 real <- getTitle(real, data)
                 #----- <author>
                 if(!is.na(data$author)){
-                    real <- getAuthor(real, data, authors)
+                    real <- getAuthor(real, data, authors, row)
                 }
                 #----- <year>
                 real <- getYear(real, data)
                 #----- <secondary-author> i.e., series editor
                 if(!is.na(data$`series-editor`)){
-                    real <- getSeriesEditors(real, data, series_editors)
+                    real <- getSeriesEditors(real, data, series_editors, row)
                 }
                 #----- <tertiary-title>
                 real <- getTertiaryTitle(real, data)
@@ -104,7 +102,7 @@ getGovDoc <- function(real, record_list){
                 real <- getPages(real, data)
                 #----- <tertiary-author> i.e., 'publisher' for gov_doc, unpublished report, other gov report
                 if(!is.na(data$`tertiary-author`)){
-                    real <- getTertiaryAuthors(real, data, tertiary_authors)
+                    real <- getTertiaryAuthors(real, data, tertiary_authors, row)
                 }
                 #----- <edition>
                 real <- getEdition(real, data)
@@ -116,7 +114,7 @@ getGovDoc <- function(real, record_list){
                 real <- getLocation(real, data)
                 #----- <custom7> i.e., `cover-type`
                 if(!is.na(data$`cover-type`)){
-                    real <- getCoverType(real, data, cover_types)
+                    real <- getCoverType(real, data, cover_types, row)
                 }
                 #----- <related-urls>
                 real <- getRelatedUrls(real, data)
