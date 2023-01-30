@@ -120,7 +120,7 @@ buildXML <- function(record_list, write){
                 #----- send output to console and save to global environment
                 assign("xml_output", real, envir = globalenv()) # save output to global environment so user can see it
                 cat(as.character(xml2::as_xml_document(real))) # print output to console for user
-                message("`forms_spreadsheet` parsed to XML...\XML printed to console for review...\n")
+                message("`forms_spreadsheet` parsed to XML...\nXML printed to console for review...\n")
                 
                 #----- write output to file if `write` flag is TRUE
                 if(write==TRUE){
