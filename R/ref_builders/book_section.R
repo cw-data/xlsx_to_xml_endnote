@@ -29,18 +29,9 @@ getBookSection <- function(real, record_list){
             source("R/tag_builders/research_notes.R") # 8
             source("R/tag_builders/cover_type.R") # 9
             source("R/tag_builders/related_urls.R") # 10
-            # source("R/tag_builders/series_editor.R") # 13
-            # source("R/tag_builders/pdf_urls.R") # WRITE ME
-            # source("R/tag_builders/photographer.R") # WRITE ME
-            # source("R/tag_builders/ppv_rev.R") # WRITE ME # "Is this photograph in the public domain?"
-            # source("R/tag_builders/caption.R") # WRITE ME
-            # source("R/tag_builders/cartographer.R") # WRITE ME
-            # source("R/tag_builders/date.R") # WRITE ME
-            # source("R/tag_builders/number.R") # WRITE ME
             
             #----- assign static assets
             dataset <- record_list$`Book section`$data
-            # send the names we parsed in `validateAuthors.R` to the getter functions along their `data`
             if(nrow(dataset)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
                 if("author_list" %in% names(record_list$`Book section`)){
                     authors <- record_list$`Book section`$author_list
@@ -62,6 +53,7 @@ getBookSection <- function(real, record_list){
                 }
             }
             
+            #----- loop to create tags for each record (i.e., row)
             for(row in 1:nrow(dataset)){ # loop that adds one of each tag for each row in `data`
                 # 4.3. nest a level-2 child node inside level-1 node
                 l1 <- xml2::xml_children(real) # define what the level-1 tags are
@@ -120,7 +112,7 @@ getBookSection <- function(real, record_list){
                 #----- <related-urls>
                 real <- getRelatedUrls(real, data)
             }
-            # cat(as.character(xml2::as_xml_document(real))) # sanity check, print to console
+            cat(as.character(xml2::as_xml_document(real))) # sanity check, print to console
             return(real)
         },
         finally = {

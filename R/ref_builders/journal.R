@@ -21,27 +21,12 @@ getJournal <- function(real, record_list){
             source("R/tag_builders/research_notes.R") # 12
             source("R/tag_builders/cover_type.R") # 13
             source("R/tag_builders/related_urls.R") # 14
-            # source("R/tag_builders/edition.R")
-            # source("R/tag_builders/editor.R")
-            # source("R/tag_builders/num_vols.R")
-            # source("R/tag_builders/secondary_volume.R") # 9
-            # source("R/tag_builders/pub_location.R") # 10
-            # source("R/tag_builders/publisher.R") # 11
-            # source("R/tag_builders/series_editor.R")
-            # source("R/tag_builders/tertiary_title.R")
-            # source("R/tag_builders/pdf_urls.R") # WRITE ME
-            # source("R/tag_builders/photographer.R") # WRITE ME
-            # source("R/tag_builders/ppv_rev.R") # WRITE ME # "Is this photograph in the public domain?"
-            # source("R/tag_builders/caption.R") # WRITE ME
-            # source("R/tag_builders/cartographer.R") # WRITE ME
-            # source("R/tag_builders/date.R") # WRITE ME
             
             #----- assign static assets
             dataset <- record_list$`Journal article`$data
-            # send the names we parsed in `validateAuthors.R` to the getter functions along their `data`
             if(nrow(dataset)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
                 if("author_list" %in% names(record_list$`Journal article`)){
-                    authors <- list(record_list$`Journal article`$author_list)
+                    authors <- record_list$`Journal article`$author_list
                 }
                 if("cartographer_list" %in% names(record_list$`Journal article`)){
                     cartographers <- record_list$`Journal article`$cartographer_list
@@ -60,11 +45,11 @@ getJournal <- function(real, record_list){
                 }
             }
             
-            #----- <record>
+            #----- loop to create tags for each record (i.e., row)
             for(row in 1:nrow(dataset)){ # loop that adds one <record> tag for each row in `data`
                 data <- dataset[row,]
-                # 4.3. nest a level-2 child node inside level-1 node
                 l1 <- xml2::xml_children(real) # define what the level-1 tags are
+                #----- <record>
                 xml_add_child(l1, "record")
                 #-----  <ref-type>
                 real <- getRefType(real, data)
@@ -87,6 +72,8 @@ getJournal <- function(real, record_list){
                 real <- getPages(real, data)
                 #----- <pdf-urls>
                 real <- getPdfUrls(real, data)
+                #----- <related-urls>
+                real <- getRelatedUrls(real, data)
                 #----- <modified-date> `location`
                 real <- getLocation(real, data)
                 #----- <research-notes>
@@ -95,8 +82,6 @@ getJournal <- function(real, record_list){
                 if(!is.na(data$`cover-type`)){
                     real <- getCoverType(real, data, cover_types, row)
                 }
-                #----- <related-urls>
-                real <- getRelatedUrls(real, data)
             }
             
             # cat(as.character(xml2::as_xml_document(real))) # sanity check, print to console

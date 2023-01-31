@@ -8,43 +8,32 @@ getUnPub <- function(real, record_list){
     tryCatch(
         expr = {
             #----- load project functions
-            source("R/tag_builders/ref_type.R") # 1
-            source("R/tag_builders/ref_type_name.R") # 2
-            source("R/tag_builders/title.R") # 3
-            source("R/tag_builders/author.R") # 4
-            source("R/tag_builders/year.R") # 5
-            source("R/tag_builders/series_editor.R") # 6
-            source("R/tag_builders/tertiary_title.R") # 7
-            source("R/tag_builders/pub_location.R") # 8
-            source("R/tag_builders/publisher.R") # 9
-            source("R/tag_builders/volume.R") # 10
-            source("R/tag_builders/secondary_volume.R") # 11
-            source("R/tag_builders/number.R") # 12
-            source("R/tag_builders/pages.R") # 13
-            source("R/tag_builders/tertiary_author.R") # 14
-            source("R/tag_builders/edition.R") # 15
-            source("R/tag_builders/pdf_urls.R") # 16
-            source("R/tag_builders/research_notes.R") # 17
-            source("R/tag_builders/location.R") # 18
-            source("R/tag_builders/cover_type.R") # 19
-            source("R/tag_builders/related_urls.R") # 20
-            # source("R/tag_builders/secondary_title.R") # 
-            # source("R/tag_builders/editor.R")
-            # source("R/tag_builders/num_vols.R")
-            # source("R/tag_builders/pub_location.R") # 10
-            # source("R/tag_builders/pdf_urls.R") # WRITE ME
-            # source("R/tag_builders/photographer.R") # WRITE ME
-            # source("R/tag_builders/ppv_rev.R") # WRITE ME # "Is this photograph in the public domain?"
-            # source("R/tag_builders/caption.R") # WRITE ME
-            # source("R/tag_builders/cartographer.R") # WRITE ME
-            # source("R/tag_builders/date.R") # WRITE ME
+            source("R/tag_builders/ref_type.R")
+            source("R/tag_builders/ref_type_name.R")
+            source("R/tag_builders/title.R")
+            source("R/tag_builders/author.R")
+            source("R/tag_builders/year.R")
+            source("R/tag_builders/series_editor.R")
+            source("R/tag_builders/tertiary_title.R")
+            source("R/tag_builders/pub_location.R")
+            source("R/tag_builders/publisher.R")
+            source("R/tag_builders/volume.R")
+            source("R/tag_builders/secondary_volume.R")
+            source("R/tag_builders/number.R")
+            source("R/tag_builders/pages.R")
+            source("R/tag_builders/tertiary_author.R")
+            source("R/tag_builders/edition.R")
+            source("R/tag_builders/pdf_urls.R")
+            source("R/tag_builders/research_notes.R")
+            source("R/tag_builders/location.R")
+            source("R/tag_builders/cover_type.R")
+            source("R/tag_builders/related_urls.R")
             
             #----- assign static assets
             dataset <- record_list$`Unpublished report (e.g., establishment or progress report)`$data
-            # send the names we parsed in `validateAuthors.R` to the getter functions along their `data`
             if(nrow(dataset)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
                 if("author_list" %in% names(record_list$`Unpublished report (e.g., establishment or progress report)`)){
-                    authors <- list(record_list$`Unpublished report (e.g., establishment or progress report)`$author_list)
+                    authors <- record_list$`Unpublished report (e.g., establishment or progress report)`$author_list
                 }
                 if("cartographer_list" %in% names(record_list$`Unpublished report (e.g., establishment or progress report)`)){
                     cartographers <- record_list$`Unpublished report (e.g., establishment or progress report)`$cartographer_list
@@ -66,14 +55,12 @@ getUnPub <- function(real, record_list){
                 }
             }
             
+            #----- loop to create tags for each record (i.e., row)
             for(row in 1:nrow(dataset)){
                 data <- dataset[row,]
-                # 4.3. nest a level-2 child node inside level-1 node
                 l1 <- xml2::xml_children(real) # define what the level-1 tags are
                 #----- <record>
-                for(row in 1:nrow(data)){ # loop that adds one <record> tag for each row in `data`
-                    xml_add_child(l1, "record")
-                }
+                xml_add_child(l1, "record")
                 #-----  <ref-type>
                 real <- getRefType(real, data)
                 real <- getRefTypeName(real, data)
@@ -81,13 +68,13 @@ getUnPub <- function(real, record_list){
                 real <- getTitle(real, data)
                 #----- <author>
                 if(!is.na(data$author)){
-                    real <- getAuthor(real, data, authors)
+                    real <- getAuthor(real, data, authors, row)
                 }
                 #----- <year>
                 real <- getYear(real, data)
                 #----- <secondary-author> i.e., series editor
                 if(!is.na(data$`series-editor`)){
-                    real <- getSeriesEditors(real, data, series_editors)
+                    real <- getSeriesEditors(real, data, series_editors, row)
                 }
                 #----- <tertiary-title>
                 real <- getTertiaryTitle(real, data)
@@ -105,7 +92,7 @@ getUnPub <- function(real, record_list){
                 real <- getPages(real, data)
                 #----- <tertiary-author> i.e., 'publisher' for un_pub, unpublished report, other gov report
                 if(!is.na(data$`tertiary-author`)){
-                    real <- getTertiaryAuthors(real, data, tertiary_authors)
+                    real <- getTertiaryAuthors(real, data, tertiary_authors, row)
                 }
                 #----- <edition>
                 real <- getEdition(real, data)

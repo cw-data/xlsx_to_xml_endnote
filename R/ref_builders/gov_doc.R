@@ -28,23 +28,12 @@ getGovDoc <- function(real, record_list){
             source("R/tag_builders/location.R") # 18
             source("R/tag_builders/cover_type.R") # 19
             source("R/tag_builders/related_urls.R") # 20
-            # source("R/tag_builders/secondary_title.R") # 
-            # source("R/tag_builders/editor.R")
-            # source("R/tag_builders/num_vols.R")
-            # source("R/tag_builders/pub_location.R") # 10
-            # source("R/tag_builders/pdf_urls.R") # WRITE ME
-            # source("R/tag_builders/photographer.R") # WRITE ME
-            # source("R/tag_builders/ppv_rev.R") # WRITE ME # "Is this photograph in the public domain?"
-            # source("R/tag_builders/caption.R") # WRITE ME
-            # source("R/tag_builders/cartographer.R") # WRITE ME
-            # source("R/tag_builders/date.R") # WRITE ME
             
             #----- assign static assets
             dataset <- record_list$`Government document (other than FS publications)`$data
-            # send the names we parsed in `validateAuthors.R` to the getter functions along their `data`
             if(nrow(dataset)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
                 if("author_list" %in% names(record_list$`Government document (other than FS publications)`)){
-                    authors <- list(record_list$`Government document (other than FS publications)`$author_list)
+                    authors <- record_list$`Government document (other than FS publications)`$author_list
                 }
                 if("cartographer_list" %in% names(record_list$`Government document (other than FS publications)`)){
                     cartographers <- record_list$`Government document (other than FS publications)`$cartographer_list
@@ -65,6 +54,8 @@ getGovDoc <- function(real, record_list){
                     tertiary_authors <- record_list$`Government document (other than FS publications)`$tertiary_author_list
                 }
             }
+            
+            #----- loop to create tags for each record (i.e., row)
             for(row in 1:nrow(dataset)){
                 data <- dataset[row,]
                 # 4.3. nest a level-2 child node inside level-1 node

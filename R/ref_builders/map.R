@@ -18,29 +18,9 @@ getMap <- function(real, record_list){
             source("R/tag_builders/caption.R") # 9
             source("R/tag_builders/cover_type.R") # 9
             source("R/tag_builders/related_urls.R") # 10
-            # source("R/tag_builders/secondary_title.R") # 11
-            # source("R/tag_builders/author.R") # 4
-            # source("R/tag_builders/edition.R") # 5
-            # source("R/tag_builders/editor.R") # 5
-            # source("R/tag_builders/num_vols.R") # 8
-            # source("R/tag_builders/secondary_volume.R") # 9
-            # source("R/tag_builders/pub_location.R") # 14
-            # source("R/tag_builders/publisher.R") # 12
-            # source("R/tag_builders/volume.R") # 13
-            # source("R/tag_builders/series_editor.R") # 13
-            # source("R/tag_builders/tertiary_title.R") # 14
-            # source("R/tag_builders/pages.R") # 15
-            # source("R/tag_builders/section.R") # 15
-            # source("R/tag_builders/research_notes.R") # 8
-            # source("R/tag_builders/series_editor.R") # 13
-            # source("R/tag_builders/pdf_urls.R") # WRITE ME
-            # source("R/tag_builders/photographer.R") # WRITE ME
-            # source("R/tag_builders/ppv_rev.R") # WRITE ME # "Is this photograph in the public domain?"
-            # source("R/tag_builders/number.R") # WRITE ME
             
             #----- assign static assets
             dataset <- record_list$`Map`$data
-            # send the names we parsed in `validateAuthors.R` to the getter functions along their `data`
             if(nrow(dataset)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
                 if("author_list" %in% names(record_list$`Map`)){
                     authors <- record_list$`Map`$author_list
@@ -62,9 +42,9 @@ getMap <- function(real, record_list){
                 }
             }
             
+            #----- loop to create tags for each record (i.e., row)
             for(row in 1:nrow(dataset)){
                 data <- dataset[row,]
-                # 4.3. nest a level-2 child node inside level-1 node
                 l1 <- xml2::xml_children(real) # define what the level-1 tags are
                 #----- <record>
                 for(row in 1:nrow(data)){ # loop that adds one <record> tag for each row in `data`
@@ -85,6 +65,8 @@ getMap <- function(real, record_list){
                 real <- getDate(real, data)
                 #----- <pdf-urls>
                 real <- getPdfUrls(real, data)
+                #----- <related-urls>
+                real <- getRelatedUrls(real, data)
                 #----- <modified-date> `location`
                 real <- getLocation(real, data)
                 #----- <caption>
@@ -93,8 +75,6 @@ getMap <- function(real, record_list){
                 if(!is.na(data$`cover-type`)){
                     real <- getCoverType(real, data, cover_types, row)
                 }
-                #----- <related-urls>
-                real <- getRelatedUrls(real, data)
             }
             
             # cat(as.character(xml2::as_xml_document(real))) # sanity check, print to console

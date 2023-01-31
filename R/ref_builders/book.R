@@ -27,17 +27,9 @@ getBook <- function(real, record_list){
             source("R/tag_builders/cover_type.R") # 18
             source("R/tag_builders/related_urls.R") # 19
             source("R/tag_builders/pages.R") # 20
-            # source("R/tag_builders/pdf_urls.R") # WRITE ME
-            # source("R/tag_builders/photographer.R") # WRITE ME
-            # source("R/tag_builders/ppv_rev.R") # WRITE ME # "Is this photograph in the public domain?"
-            # source("R/tag_builders/caption.R") # WRITE ME
-            # source("R/tag_builders/cartographer.R") # WRITE ME
-            # source("R/tag_builders/date.R") # WRITE ME
-            # source("R/tag_builders/number.R") # WRITE ME
             
             #----- assign static assets
             dataset <- record_list$Book$data
-            # send the names we parsed in `validateAuthors.R` to the getter functions along their `data`
             if(nrow(dataset)>0){ # only attempt to assign these lists if there are records in this `record_list` subset
                 if("author_list" %in% names(record_list$Book)){
                     authors <- record_list$Book$author_list
@@ -58,6 +50,8 @@ getBook <- function(real, record_list){
                     cover_types <- record_list$Book$cover_type_list
                 }
             }
+            
+            #----- loop to create tags for each record (i.e., row)
             for(row in 1:nrow(dataset)){
                 data <- dataset[row,]
                 # 4.3. nest a level-2 child node inside level-1 node
@@ -97,6 +91,8 @@ getBook <- function(real, record_list){
                 real <- getTertiaryTitle(real, data)
                 #----- <pdf-urls>
                 real <- getPdfUrls(real, data)
+                #----- <pages>
+                real <- getPages(real, data)
                 #----- <modified-date> `location`
                 real <- getLocation(real, data)
                 #----- <research-notes>
@@ -107,8 +103,6 @@ getBook <- function(real, record_list){
                 }
                 #----- <related-urls>
                 real <- getRelatedUrls(real, data)
-                #----- <pages>
-                real <- getPages(real, data)
             }
             
             # cat(as.character(xml2::as_xml_document(real))) # sanity check, print to console
