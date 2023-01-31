@@ -1,0 +1,13 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+data/testxml1.xml
+resources/20221022_endnote_dev.docx
+scripts/carriage_return_troubleshooting.R
+data/20221228
+data/test_book.csv
+data/20221230
+data/20221116_excel_example.xlsx
+R/tag_builders/backup_book.R
+spec_comparison_20230129.R
