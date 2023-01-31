@@ -10,13 +10,13 @@ getSeriesEditors <- function(real, data, series_editors, row){
         }
             l3 <- xml_find_all(l2, "//contributors")
             xml_add_child(l3[length(l3)], "secondary-authors")
-            for(j in 1:length(series_editors[[row]][[1]])){
+            for(j in 1:length(series_editors[[row]])){
                 l4 <- xml2::xml_children(l3)
                 xml_add_child(l4[length(l4)], "author")
                 l5 <- xml2::xml_children(l4)
                 xml_set_attr(l5[length(l5)], "role", "series-editor")
                 l6 <- xml2::xml_children(l5)
-                xml_add_child(l5[length(l5)], "style", trimws(series_editors[[row]][[1]][[j]]))
+                xml_add_child(l5[length(l5)], "style", trimws(series_editors[[row]][[j]]))
             }
         }
     return(real)

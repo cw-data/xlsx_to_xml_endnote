@@ -6,7 +6,7 @@ getPhotographer <- function(real, data, photographers, row){
         xml_add_child(l2[length(l2)], "contributors")
         l3 <- xml2::xml_children(l2)
         xml_add_child(l3[length(l3)], "tertiary-authors")
-        for(j in 1:length(photographers)){
+        for(j in 1:length(photographers[[row]])){
             l4 <- xml2::xml_children(l3)
             xml_add_child(l4[length(l4)], "author")
             l5 <- xml2::xml_children(l4)
