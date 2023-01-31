@@ -28,7 +28,8 @@ loadData <- function(forms_spreadsheet){
             # validate the user-provided `forms_spreadsheet` matches known colnames
             # we'll compare user input against an example that has the correct column format
             # check for things that we know are wrong and would produce errors later in the script
-            example_forms_spreadsheet <- readxl::read_excel("data/20221116_excel_example.xlsx") # read example
+            # example_forms_spreadsheet <- readxl::read_excel("data/20221116_excel_example.xlsx") # read example (old_spec)
+            example_forms_spreadsheet <- readxl::read_excel("resources/forms_example_20230130.xlsx") # read example (new_spec)
             # check that ncol is legit
             if(ncol(forms_spreadsheet) == ncol(example_forms_spreadsheet)){ # if the number of columns is correct
                 message("`forms_spreadsheet` ncol() is acceptable...") # print success message
@@ -60,7 +61,8 @@ loadData <- function(forms_spreadsheet){
                 break # end the program
             }
             # check that ref-types are legit
-            ref_type_lookup <- readxl::read_excel("resources/endnote_ref-type_dictionary.xlsx") # a lookup table of reference types
+            # ref_type_lookup <- readxl::read_excel("resources/endnote_ref-type_dictionary.xlsx") # a lookup table of reference types (old_spec)
+            ref_type_lookup <- readxl::read_excel("resources/endnote_ref-type_dictionary_20230130.xlsx") # a lookup table of reference types (new_spec)
             ref_type_lookup$value <- stringr::str_extract(ref_type_lookup$XML, "([0-9]+)") # extract the value from inside the xml tags
             forms_spreadsheet <- dplyr::left_join(forms_spreadsheet, # add the $value column to `forms_spreadsheet`
                                                   ref_type_lookup %>% select("Reference type (from Form)", "value"),
@@ -93,7 +95,7 @@ loadData <- function(forms_spreadsheet){
             # assign("record_list", record_list, envir = globalenv())
         },
         finally = {
-            message("Ready to build xml!\n\nEnter 'y' to build xml or 'n' to quit...\n") # message indicating the function job completed
+            message("Ready to build xml!\n\n") # message indicating the function job completed
         }
     )
 }
